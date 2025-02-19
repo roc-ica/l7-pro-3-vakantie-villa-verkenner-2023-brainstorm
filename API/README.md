@@ -3,6 +3,7 @@
 ## Conventions
 
 ### Naming Rules
+
 - Fields/Properties:
   - Public: Pascal-Case
   - Private: Underscore Camel-Case
@@ -11,4 +12,4 @@
   - Public: Pascal-Case
   - Private: Camel-Case
   - Async: "Async" postfix
-- **GEEN VAR** (anders word je recht op koffie van je afgenomen)
+- **DON'T USE VAR** (Otherwise you right to coffee will be revoked)
