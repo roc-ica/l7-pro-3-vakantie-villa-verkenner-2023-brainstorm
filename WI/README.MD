@@ -3,5 +3,6 @@
 ## Conventions
 
 ### Types
-- `const` voor dingen die niet veranderen
-- `let` voor dingen die wel veranderen
+
+- `const` For variables that will not be changed.
+- `let` For variables that are dynamic and/or change often.
