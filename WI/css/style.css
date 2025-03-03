@@ -1,0 +1,101 @@
+/* Base Rules */
+:root {
+    --text-color-dark: #1B1B2F;
+    --text-color-light: #E9ECEF;
+    --primary-color: #1F4068;
+    --secondary-color: #162447;
+    --accent-primary: #E43F5A;
+    --accent-primary: #F3A7B4;
+    --nav-select: #0000001a;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&family=Viga&display=swap');
+
+body,
+p {
+    font-family: 'Viga', sans-serif;
+    font-size: 16px;
+    margin: 0;
+    background-color: var(--secondary-color);
+}
+
+
+h1,
+h2,
+h3 {
+    font-family: 'Taviraj', serif;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 36px;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.small-text {
+    font-size: 14px;
+}
+
+/* NavBar */
+.navbar {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    display: flex;
+    align-items: left;
+    position: sticky;
+    top: 0;
+}
+
+.navbar * {
+    color: var(--text-color-light);
+    text-decoration: none;
+    padding: 0 24px;
+}
+
+.navbar .active {
+    background-color: var(--nav-select);
+}
+
+.navbar .logo {
+    margin: 5px;
+    padding: 5px 0px 0px 0px;
+    max-height: 72px;
+}
+
+/* content */
+.content {
+    min-height: calc(100vh - 216px);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    display: flex;
+    flex-direction: row;
+}
+
+footer img {
+    max-height: 128px;
+}
+
+footer .contact {
+    display: flex;
+    flex-direction: column;
+    margin: 16px 24px;
+}
+
+footer .contact * {
+    color: var(--text-color-light);
+    background-color: var(--primary-color);
+    padding: 0px;
+    margin: 4px;
+}
