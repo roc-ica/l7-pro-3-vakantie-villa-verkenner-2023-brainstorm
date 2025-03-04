@@ -130,8 +130,10 @@ nav.mobile {
         background-color: var(--primary-color);
     }
 
-    nav.mobile .top #mobileDropDownButton p {
+    nav.mobile .top #mobileDropDownButton img {
         transform: rotate(0deg);
+        max-width: 50px;
+        max-height: 50px;
         transition: all 0.5s;
     }
 
@@ -139,7 +141,7 @@ nav.mobile {
         height: 265px;
     }
 
-    nav.mobile .top #mobileDropDownButton.show p {
+    nav.mobile .top #mobileDropDownButton.show img {
         transform: rotate(90deg);
     }
 
