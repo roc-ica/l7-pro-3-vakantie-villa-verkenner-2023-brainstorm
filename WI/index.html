@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vakantie Villa Verkenner</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
 </head>
 
 <body>
-    <div class="navbar">
+    <nav class="desktop">
         <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
         <a href=" index.html" class="active">
             <h3>Home</h3>
@@ -22,7 +23,30 @@
                 Villa's
             </h3>
         </a>
-    </div>
+    </nav>
+    <nav class="mobile">
+        <div class="top">
+            <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+            <button id="mobileDropDownButton" class="dropbtn" onclick="toggleDropdown()">
+                <p id="mobileDropwDownButtonText">☰</p>
+            </button>
+        </div>
+        <div class="dropdown">
+            <div id="mobileDropDown" class="dropdown-content">
+                <a href="index.html" class="active">
+                    <h3>Home</h3>
+                </a>
+                <a href="index.html">
+                    <h3>Over ons</h3>
+                </a>
+                <a href="index.html">
+                    <h3>
+                        Villa's
+                    </h3>
+                </a>
+            </div>
+        </div>
+    </nav>
     <div class="content">
 
     </div>
@@ -31,7 +55,7 @@
         <div class="contact">
             <h3>Contact</h3>
             <p>Telefoon: 06-12345678</p>
-            <p>Email:
+            <p>Email: email@adress.com</p>
         </div>
     </footer>
 </body>
