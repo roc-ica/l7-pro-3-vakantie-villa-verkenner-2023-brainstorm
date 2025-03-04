@@ -168,7 +168,7 @@ footer {
     flex-direction: row;
 }
 
-footer img {
+footer .logo {
     max-height: 128px;
 }
 
@@ -190,12 +190,11 @@ footer .contact * {
         flex-direction: column-reverse;
     }
 
-    footer img {
+    footer .logo {
         max-width: 500px;
     }
 
     footer .contact {
         margin: 8px 12px;
     }
-
 }
