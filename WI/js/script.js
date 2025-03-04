@@ -8,7 +8,7 @@ function toggleDropdown() {
 
 document.onclick = function (event) {
     // Close the dropdown if the user clicks outside of it
-    if (!MobileDropDownButton.contains(event.target) && !event.target.matches("#mobileDropwDownButtonText") && !MobileDropDown.contains(event.target)) {
+    if (!MobileDropDownButton.contains(event.target) && !MobileDropDown.contains(event.target)) {
         MobileDropDown.classList.remove("show");
         MobileDropDownButton.classList.remove("show");
     }
