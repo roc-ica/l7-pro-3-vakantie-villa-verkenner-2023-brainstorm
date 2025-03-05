@@ -24,7 +24,7 @@
     justify-content: center;
   }
 
-  .blok {
+  .placeholderBlock {
     background-color: #34495e;
     width: 30%;
     height: 250px;
@@ -43,12 +43,12 @@
     justify-content: center;
    }
 
-  .block{
+  .infoContainerBlock{
     background-color: var(--primary-color);
     width: 45rem;
     height: 250px;
-   color: var( --text-color-light);
-   height: auto;
+    color: var( --text-color-light);
+    height: auto;
   }
 
   .infoText{

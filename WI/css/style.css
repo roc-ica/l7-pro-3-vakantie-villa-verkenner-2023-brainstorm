@@ -161,8 +161,6 @@ nav.mobile {
     min-height: calc(100vh - 216px);
 }
 
-
-
 /* Footer */
 footer {
     background-color: var(--primary-color);
