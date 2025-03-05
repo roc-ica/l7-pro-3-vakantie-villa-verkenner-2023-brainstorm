@@ -161,11 +161,14 @@ nav.mobile {
     min-height: calc(100vh - 216px);
 }
 
+
+
 /* Footer */
 footer {
     background-color: var(--primary-color);
     display: flex;
     flex-direction: row;
+    margin-top: 1rem;
 }
 
 footer .logo {
@@ -198,3 +201,4 @@ footer .contact * {
         margin: 8px 12px;
     }
 }
+
