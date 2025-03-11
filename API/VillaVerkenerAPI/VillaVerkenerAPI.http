@@ -1,0 +1,19 @@
+@VillaVerkenerAPI_HostAddress = http://localhost:5194
+
+// Simple Hello World endpoint
+GET {{VillaVerkenerAPI_HostAddress}}/hello
+Accept: text/plain
+
+###
+
+// Endpoint to get all villas
+GET {{VillaVerkenerAPI_HostAddress}}/villaList
+Accept: application/json
+
+###
+
+// Endpoint to show Json of hardcoded Villa
+GET {{VillaVerkenerAPI_HostAddress}}/villa
+Accept: application/json
+
+###
