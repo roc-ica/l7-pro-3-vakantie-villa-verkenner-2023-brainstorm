@@ -31,11 +31,11 @@ app.UseHttpsRedirection();
 // Simple Hello World endpoint
 app.MapGet("/hello", () => "Hello, World!");
 
-// Endpoint to get all 'naam' from 'Villa' table
+// Endpoint to get all villas
 app.MapGet("/villaList", async (DBContext dbContext) =>
 {
-    List<string> villaNames = await dbContext.Villas.Select(v => v.Naam).ToListAsync();
-    return villaNames;
+    List<Villa> villaList = await dbContext.Villas.ToListAsync();
+    return villaList;
 });
 // Endpoint to show Json of hardcoded Villa
 app.MapGet("/villa", () => new Villa

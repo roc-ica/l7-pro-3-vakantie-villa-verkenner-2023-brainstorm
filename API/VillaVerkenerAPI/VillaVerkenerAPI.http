@@ -6,7 +6,7 @@ Accept: text/plain
 
 ###
 
-// Endpoint to get all 'naam' from 'Villa' table
+// Endpoint to get all villas
 GET {{VillaVerkenerAPI_HostAddress}}/villaList
 Accept: application/json
 
