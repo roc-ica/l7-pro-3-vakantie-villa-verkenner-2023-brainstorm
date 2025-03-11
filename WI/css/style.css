@@ -4,7 +4,7 @@
 	--text-color-light: #E9ECEF;
 	--primary-color: #1F4068;
 	--secondary-color: #162447;
-	--accent-primary: #E43F5A;
+	--accent-primary: #BEA578;
 	--accent-secondary: #F3A7B4;
 	--nav-select: #0000001a;
 }
@@ -56,6 +56,16 @@ button {
 	color: var(--text-color-light);
 	cursor: pointer;
 }
+
+.ButtonLink {
+	text-decoration: none;
+	color: var(--text-color-light);
+	background-color: var(--accent-primary);
+	padding: 8px 16px;
+	border-radius: 4px;
+}
+
+
 
 /* NavBar */
 nav {
