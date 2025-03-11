@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
-using VillaVerkenerAPI.Models;
+using VillaVerkenerAPI.Models.DB;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Connection string not found.");
@@ -17,7 +17,7 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseMySQL(connectionString));
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -32,9 +32,9 @@ app.UseHttpsRedirection();
 app.MapGet("/hello", () => "Hello, World!");
 
 // Endpoint to get all 'naam' from 'Villa' table
-app.MapGet("/villaList", async (MyAppDbContext dbContext) =>
+app.MapGet("/villaList", async (DBContext dbContext) =>
 {
-    var villaNames = await dbContext.Villas.Select(v => v.Naam).ToListAsync();
+    List<string> villaNames = await dbContext.Villas.Select(v => v.Naam).ToListAsync();
     return villaNames;
 });
 // Endpoint to show Json of hardcoded Villa

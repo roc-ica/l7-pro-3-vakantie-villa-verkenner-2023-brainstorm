@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VillaVerkenerAPI.Models;
+namespace VillaVerkenerAPI.Models.DB;
 
 public partial class Villa
 {

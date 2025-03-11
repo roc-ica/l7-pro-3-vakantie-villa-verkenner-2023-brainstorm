@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace VillaVerkenerAPI.Models;
+namespace VillaVerkenerAPI.Models.DB;
 
-public partial class MyAppDbContext : DbContext
+public partial class DBContext : DbContext
 {
-    public MyAppDbContext()
+    public DBContext()
     {
     }
 
-    public MyAppDbContext(DbContextOptions<MyAppDbContext> options)
+    public DBContext(DbContextOptions<DBContext> options)
         : base(options)
     {
     }
