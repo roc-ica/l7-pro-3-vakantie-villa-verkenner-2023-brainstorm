@@ -9,7 +9,6 @@
 	--nav-select: #0000001a;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&family=Viga&display=swap');
 
 * {
 	color: var(--text-color-light);
@@ -30,7 +29,7 @@ body {
 h1,
 h2,
 h3 {
-	font-family: 'Taviraj', serif;
+	font-family: 'Inter', sans-serif;
 }
 
 h1 {
