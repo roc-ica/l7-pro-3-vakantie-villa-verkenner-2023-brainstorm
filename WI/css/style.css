@@ -2,10 +2,10 @@
 :root {
 	--text-color-dark: #1B1B2F;
 	--text-color-light: #E9ECEF;
-	--primary-color: #1F4068;
-	--secondary-color: #162447;
+	--primary-color: #5D7FA8;
+	--secondary-color: #1F4068;
 	--accent-primary: #BEA578;
-	--accent-secondary: #F3A7B4;
+	--accent-secondary: #FFF0D4;
 	--nav-select: #0000001a;
 }
 
@@ -180,20 +180,31 @@ footer {
 	background-color: var(--primary-color);
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	margin-top: 1rem;
 }
+
 
 footer .logo {
 	max-height: 128px;
 }
 
-footer .contact {
+footer .links {
+	color: var(--text-color-light);
+	text-decoration: none;
+	padding: 0 24px;
+	margin: 20px;
+}
+
+footer .contact,
+footer .links {
 	display: flex;
 	flex-direction: column;
 	margin: 16px 24px;
 }
 
-footer .contact * {
+footer .contact *,
+footer .links * {
 	color: var(--text-color-light);
 	background-color: var(--primary-color);
 	padding: 0px;
@@ -202,14 +213,17 @@ footer .contact * {
 
 @media (max-width: 768px) {
 	footer {
-		flex-direction: column-reverse;
+		flex-direction: column;
 	}
 
 	footer .logo {
-		max-width: 500px;
+		max-width: 100%;
+		max-height: none;
 	}
 
-	footer .contact {
+	footer .contact,
+	footer .links {
+		padding: 0px;
 		margin: 8px 12px;
 	}
 }
