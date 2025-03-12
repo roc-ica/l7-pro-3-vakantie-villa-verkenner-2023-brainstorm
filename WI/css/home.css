@@ -80,9 +80,6 @@
 	border-radius: 8px;
 }
 
-
-
-
 .infoContainer {
 	display: flex;
 	padding: 20px;
@@ -128,6 +125,21 @@
 
 	.villaCard {
 		width: 100%;
-		height: 300px;
+	}
+
+	.villaCard .info .title h2 {
+		margin: 0px;
+	}
+
+	.villaCard .info .actions {
+		flex-direction: row;
+		margin-top: -16px;
+		margin-left: 0%;
+	}
+
+
+
+	.villaCard .info .actions .ButtonLink {
+		margin: 16px;
 	}
 }
