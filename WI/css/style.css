@@ -2,14 +2,16 @@
 :root {
 	--text-color-dark: #1B1B2F;
 	--text-color-light: #E9ECEF;
-	--primary-color: #1F4068;
-	--secondary-color: #162447;
-	--accent-primary: #E43F5A;
-	--accent-secondary: #F3A7B4;
+	--primary-color: #5D7FA8;
+	--secondary-color: #1F4068;
+	--accent-primary: #BEA578;
+	--accent-secondary: #FFF0D4;
 	--nav-select: #0000001a;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&family=Viga&display=swap');
+* {
+	color: var(--text-color-light);
+}
 
 body,
 p,
@@ -26,7 +28,7 @@ body {
 h1,
 h2,
 h3 {
-	font-family: 'Taviraj', serif;
+	font-family: 'Inter', sans-serif;
 }
 
 h1 {
@@ -55,6 +57,14 @@ button {
 	background-color: var(--secondary-color);
 	color: var(--text-color-light);
 	cursor: pointer;
+}
+
+.buttonLink {
+	text-decoration: none;
+	color: var(--text-color-light);
+	background-color: var(--accent-primary);
+	padding: 8px 16px;
+	border-radius: 4px;
 }
 
 /* NavBar */
@@ -90,7 +100,6 @@ nav.desktop {
 nav.mobile {
 	display: none;
 }
-
 
 @media (max-width: 768px) {
 
@@ -155,7 +164,6 @@ nav.mobile {
 	}
 }
 
-
 /* content */
 .content {
 	min-height: calc(100vh - 216px);
@@ -166,6 +174,7 @@ footer {
 	background-color: var(--primary-color);
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	margin-top: 1rem;
 }
 
@@ -173,13 +182,22 @@ footer .logo {
 	max-height: 128px;
 }
 
-footer .contact {
+footer .links {
+	color: var(--text-color-light);
+	text-decoration: none;
+	padding: 0 24px;
+	margin: 20px;
+}
+
+footer .contact,
+footer .links {
 	display: flex;
 	flex-direction: column;
 	margin: 16px 24px;
 }
 
-footer .contact * {
+footer .contact *,
+footer .links * {
 	color: var(--text-color-light);
 	background-color: var(--primary-color);
 	padding: 0px;
@@ -188,14 +206,17 @@ footer .contact * {
 
 @media (max-width: 768px) {
 	footer {
-		flex-direction: column-reverse;
+		flex-direction: column;
 	}
 
 	footer .logo {
-		max-width: 500px;
+		max-width: 100%;
+		max-height: none;
 	}
 
-	footer .contact {
+	footer .contact,
+	footer .links {
+		padding: 0px;
 		margin: 8px 12px;
 	}
 }
