@@ -5,28 +5,28 @@ namespace VillaVerkenerAPI.Models
     public class SmallVilla
     {
         public int VillaID { get; set; }
-        public string Naam { get; set; }
-        public decimal Prijs { get; set; }
-        public string Locatie { get; set; }
-        public int Capaciteit { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string Location { get; set; }
+        public int Capacity { get; set; }
         public Image VillaImage { get; set; }
 
-        public SmallVilla(int villaID, string naam, decimal prijs, string locatie, int capaciteit, Image villaImage)
+        public SmallVilla(int villaID, string name, decimal price, string location, int capacity, Image villaImage)
         {
             VillaID = villaID;
-            Naam = naam;
-            Prijs = prijs;
-            Locatie = locatie;
-            Capaciteit = capaciteit;
+            Name = name;
+            Price = price;
+            Location = location;
+            Capacity = capacity;
             VillaImage = villaImage;
         }
         public SmallVilla(Villa villa)
         {
             VillaID = villa.VillaId;
-            Naam = villa.Naam;
-            Prijs = villa.Prijs;
-            Locatie = villa.Locatie;
-            Capaciteit = villa.Capaciteit;
+            Name = villa.Naam;
+            Price = villa.Prijs;
+            Location = villa.Locatie;
+            Capacity = villa.Capaciteit;
             VillaImage = villa.VillaImage;
         }
 
