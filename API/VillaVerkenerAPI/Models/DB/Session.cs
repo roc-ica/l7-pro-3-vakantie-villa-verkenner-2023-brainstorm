@@ -5,7 +5,9 @@ namespace VillaVerkenerAPI.Models.DB;
 
 public partial class Session
 {
-    public string Session1 { get; set; } = null!;
+    public int SessionId { get; set; }
+
+    public string SessionKey { get; set; } = null!;
 
     public int UserId { get; set; }
 

@@ -7,7 +7,7 @@ public partial class Villa
 {
     public int VillaId { get; set; }
 
-    public int VillaImageId { get; set; }
+    public int? VillaImageId { get; set; }
 
     public string Naam { get; set; } = null!;
 
@@ -33,5 +33,5 @@ public partial class Villa
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 
-    public virtual Image VillaImage { get; set; } = null!;
+    public virtual Image? VillaImage { get; set; }
 }

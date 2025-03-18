@@ -14,4 +14,6 @@ public partial class User
     public sbyte IsDeleted { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
 }
