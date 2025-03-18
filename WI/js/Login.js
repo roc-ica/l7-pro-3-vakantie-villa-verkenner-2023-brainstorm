@@ -1,6 +1,7 @@
 const form = document.getElementById('login-form');
 const emailField = document.getElementById('email');
 const passwordField = document.getElementById('password');
+const Login_Popup = document.getElementById('login-message');
 form.onsubmit = async function(event) {
     event.preventDefault();
 
@@ -16,12 +17,17 @@ form.onsubmit = async function(event) {
         alert('Wachtwoord moet minimaal 8 tekens bevatten')
         return;
     }
-
+    
     const IsLoggedInSuccess = await LoginRequest.login(email, password)
-    if (IsLoggedInSuccess){
-        alert('Inloggen gelukt')
+    console.log(IsLoggedInSuccess)
+
+    if (IsLoggedInSuccess.message === "Success"){
+        sessionStorage.setItem('SessionKey', IsLoggedInSuccess.data.SessionKey);
+       
     }else{
         alert('Inloggen mislukt')
+        IsLoggedInSuccess.data.Reason;
+    // Login_Popup.style.display = 'block';
     }
- 
+
 }

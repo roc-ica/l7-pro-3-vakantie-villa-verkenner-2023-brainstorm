@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
+using VillaVerkenerAPI.Services;
 
 namespace VillaVerkenerAPI.Endpoints;
 
@@ -16,36 +18,29 @@ public class LoginController : ControllerBase
         _dbContext = dbContext;
     }
 
-
     [HttpGet("{Email}/{Password}")]
-    public async Task<ActionResult<bool>> GetRequest([FromRoute] string Email, [FromRoute] string Password )
+    public async Task<ActionResult<RequestResponse>> GetRequest([FromRoute] string Email, [FromRoute] string Password )
     {
         User? user = await _dbContext.Users.Where(user=>user.IsDeleted == 0).FirstOrDefaultAsync(user => Email.Equals(user.Email));
 
         if (user == null)
         {
-            return false;
+            return RequestResponse.Failed("Wrong", new Dictionary<string, string> { {"Reason","verkeerde Email"} });
         }
 
-        if (Password.Equals(user.Password))
+        if (PasswordHasher.ValidatePassword(Password, user.Password))
         {
-            Guid guid = Guid.NewGuid();
-            var NewSession = new Session();
-            NewSession.Session1 = guid.ToString();
+            Guid sessionKey = Guid.NewGuid();
+            Session NewSession = new Session();
+            NewSession.SessionKey = sessionKey.ToString();
             NewSession.UserId = user.UserId;
             NewSession.ExpirationDate = DateTime.UtcNow.AddDays(7);
             await _dbContext.Sessions.AddAsync(NewSession);
-            return true;
+            return RequestResponse.Successfull("Success", new Dictionary<string, string> { { "SessionKey", sessionKey.ToString() } });
         }
         else
         {
-            return false;
+            return RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "verkeerde Wachtwoord" } });
         }
-        
-
-
-
-        }
-
-
+    }
 }
