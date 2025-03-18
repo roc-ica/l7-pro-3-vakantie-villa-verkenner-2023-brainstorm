@@ -81,3 +81,26 @@ ${this.capacity} personen</p>
         `;
     }
 }
+
+class LoginRequest extends Requests{
+
+    static get Adress(){
+        return super.Adress + '/login';
+    }
+    static async login(email, password){
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `${this.Adress}/${email}/${password}`);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject(xhr.statusText);
+                }
+            };
+            xhr.onerror = () => reject(xhr.statusText);
+            xhr.send();
+        });
+    }
+}
