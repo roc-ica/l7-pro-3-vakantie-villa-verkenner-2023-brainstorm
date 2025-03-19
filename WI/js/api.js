@@ -49,6 +49,9 @@ class VillaRequests extends Requests {
     static async getTags() {
         return await this.request('GET', `${this.address}/get-tags`);
     }
+    static async getVillasByFilters(filters) {
+        return await this.request('POST', `${this.address}/get-by-filters`, filters);
+    }
 }
 
 

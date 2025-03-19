@@ -54,4 +54,24 @@ public class VillaController : ControllerBase
         IEnumerable<LocationTag> LocationTags = await _dbContext.LocationTags.ToListAsync();
         return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "PropertyTags", JsonSerializer.Serialize(PropertyTags) }, { "LocationTags", JsonSerializer.Serialize(LocationTags) } }));
     }
+
+    public class FilterRequest
+    {
+        public List<string> PropertyTags { get; set; }
+        public List<string> LocationTags { get; set; }
+        public int MinPrice { get; set; }
+        public int MaxPrice { get; set; }
+        public int MinRooms { get; set; }
+        public int MaxRooms { get; set; }
+        public int MinBathrooms { get; set; }
+        public int MaxBathrooms { get; set; }
+        public int MinGuests { get; set; }
+        public int MaxGuests { get; set; }
+    }
+
+    [HttpPost("get-by-filters")]
+    public async Task<ActionResult<RequestResponse>> GetVillasFiltered([FromBody] FilterRequest filters)
+    {
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Filters", JsonSerializer.Serialize(filters) } }));
+    }
 }

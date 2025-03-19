@@ -51,12 +51,13 @@
             <div class="filters">
                 <div class="filterGroup">
                     <div class="filter">
-                        <input type="search" name="search" id="searchField" placeholder="Zoek een villa">
+                        <input type="search" name="search" id="searchField" placeholder="Zoek een villa"
+                            onblur="UpdateAllFilterValues()">
                     </div>
                     <div class="filter">
                         <label for="locationSearchField">Locatie</label>
                         <input type="search" name="locationSearchField" id="locationSearchField"
-                            placeholder="Zoek op locatie">
+                            placeholder="Zoek op locatie" onblur="UpdateAllFilterValues()">
                     </div>
                 </div>
                 <div class="filterGroup">
