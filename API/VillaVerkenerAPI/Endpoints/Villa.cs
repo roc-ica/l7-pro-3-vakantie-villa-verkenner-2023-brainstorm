@@ -18,10 +18,11 @@ public class VillaController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpGet]
+    [HttpGet("get-all")]
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
-        IEnumerable<Villa> villas = await _dbContext.Villas.ToListAsync();
+        List<Villa> villaEntities = await _dbContext.Villas.ToListAsync();
+        List<SmallVilla> villas = villaEntities.Select(v => SmallVilla.From(v)).ToList();
         return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
     }
 

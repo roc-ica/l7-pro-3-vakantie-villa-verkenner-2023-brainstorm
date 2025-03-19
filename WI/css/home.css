@@ -27,58 +27,6 @@
 	justify-content: center;
 }
 
-.villaCard {
-	width: 100%;
-	background-color: var(--primary-color);
-	display: flex;
-	flex-direction: row;
-}
-
-.villaCard .imageContainer {
-	width: 50%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.villaCard .imageContainer img {
-	width: 90%;
-	margin: 10px;
-	border: 1px solid var(--text-color-light);
-}
-
-.villaCard .info {
-	width: 50%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: left;
-}
-
-.villaCard .info #price {
-	color: var(--accent-primary);
-	font-size: 2rem;
-	margin-left: 16px
-}
-
-.villaCard .info .actions {
-	display: flex;
-	flex-direction: column;
-	gap: 0px;
-	width: 40%;
-	margin-left: 60%;
-}
-
-.villaCard .info .actions .buttonLink {
-	margin: 16px;
-	margin-top: -16px;
-	height: 50px;
-	text-align: center;
-	align-content: center;
-	border-radius: 8px;
-}
 
 .infoContainer {
 	display: flex;

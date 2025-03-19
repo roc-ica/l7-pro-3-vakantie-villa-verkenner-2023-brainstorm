@@ -1,0 +1,26 @@
+.villaSearchContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "filters villaList villaList"
+        "filters villaList villaList"
+        "filters villaList villaList";
+}
+
+.filters {
+    grid-area: filters;
+}
+
+.villaList {
+    grid-area: villaList;
+    margin: 5px;
+}
+
+.villaList .villaCard {
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+}

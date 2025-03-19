@@ -70,6 +70,8 @@ class SmallVilla {
         this.image = villa.VillaImage;
         this.location = villa.Location;
         this.capacity = villa.Capacity;
+        this.bedrooms = villa.Bedrooms;
+        this.bathrooms = villa.Bathrooms;
 
         //TODO: remove override
         this.image = 'Assets/villas/LuckyDuck/Exterior.avif'
@@ -89,6 +91,9 @@ class SmallVilla {
                     <p>${this.location}</p>
                     <p><img src="Assets/icons/personIcon.svg" alt="Person icon">
 ${this.capacity} personen</p>
+                    <p><img src="Assets/icons/bedIcon.svg" alt="Bed icon">${this.bedrooms} Slaapkamers</p>
+                    <p><img src="Assets/icons/bathIcon.svg" alt="Bath icon">${this.bathrooms} Badkamers</p>
+                
                 </div>
                 <div class="actions">
                     <h3 id="price">€${this.price},-</h3>

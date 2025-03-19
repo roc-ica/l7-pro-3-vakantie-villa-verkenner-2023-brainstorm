@@ -8,6 +8,7 @@ async function getVillas() {
             </div>
         `;
     }
+
     const villas = await VillaRequests.getVillasByIDs(ids)
     if (villas.success === false) {
         document.getElementsByClassName('villaContainer')[0].innerHTML = `

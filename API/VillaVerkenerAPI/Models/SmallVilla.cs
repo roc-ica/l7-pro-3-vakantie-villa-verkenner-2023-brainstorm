@@ -9,9 +9,11 @@ namespace VillaVerkenerAPI.Models
         public decimal Price { get; set; }
         public string Location { get; set; }
         public int Capacity { get; set; }
+        public int Bedrooms { get; set; }
+        public int Bathrooms { get; set; }
         public Image VillaImage { get; set; }
 
-        public SmallVilla(int villaID, string name, decimal price, string location, int capacity, Image villaImage)
+        public SmallVilla(int villaID, string name, decimal price, string location, int capacity, Image villaImage, int bedrooms, int bathrooms)
         {
             VillaID = villaID;
             Name = name;
@@ -19,6 +21,8 @@ namespace VillaVerkenerAPI.Models
             Location = location;
             Capacity = capacity;
             VillaImage = villaImage;
+            Bedrooms = bedrooms;
+            Bathrooms = bathrooms;
         }
         public SmallVilla(Villa villa)
         {
@@ -28,6 +32,8 @@ namespace VillaVerkenerAPI.Models
             Location = villa.Locatie;
             Capacity = villa.Capaciteit;
             VillaImage = villa.VillaImage;
+            Bedrooms = villa.Slaapkamers;
+            Bathrooms = villa.Badkamers;
         }
 
         public static SmallVilla From(Villa villa)
