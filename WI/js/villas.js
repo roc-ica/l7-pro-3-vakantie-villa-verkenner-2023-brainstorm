@@ -10,7 +10,12 @@ const filterConfig = {
 };
 
 async function getVillas() {
-    const villas = await VillaRequests.getVillas();
+    const [villas, Tags] = await Promise.all([
+        VillaRequests.getVillas(),
+        VillaRequests.getTags()
+    ]);
+    console.log(villas);
+    console.log(Tags);
     if (villas.success === false) {
         console.log(villas.error);
         return;
@@ -22,6 +27,34 @@ async function getVillas() {
             const villa = new SmallVilla(villaData[i]);
             document.getElementsByClassName('villaList')[0].innerHTML += villa.html;
         }
+    }
+
+    if (Tags.success === false) {
+        console.log(Tags.error);
+        return;
+    }
+    let PropertyTags = JSON.parse(Tags.data.PropertyTags);
+    let locationTags = JSON.parse(Tags.data.LocationTags);
+    console.log(PropertyTags);
+    console.log(locationTags);
+    const PropertyTagsContainer = document.getElementById('propertyTagsContainer');
+    const locationTagsContainer = document.getElementById('locationTagsContainer');
+
+    PropertyTagsContainer.innerHTML = '';
+    locationTagsContainer.innerHTML = '';
+
+    for (let i = 0; i < PropertyTags.length; i++) {
+        PropertyTagsContainer.innerHTML += `<div class="form-check">
+            <input class="form-check-input" type="checkbox" value="${PropertyTags[i].PropertyTagID}" id="propertyTag${PropertyTags[i].PropertyTagID}">
+            <label class="form-check-label" for="propertyTag${PropertyTags[i].PropertyTagID}">${PropertyTags[i].PropertyTag1}</label>
+        </div>`;
+    }
+
+    for (let i = 0; i < locationTags.length; i++) {
+        locationTagsContainer.innerHTML += `<div class="form-check">
+            <input class="form-check-input" type="checkbox" value="${locationTags[i].LocationTagID}" id="locationTag${locationTags[i].LocationTagID}">
+            <label class="form-check-label" for="locationTag${locationTags[i].LocationTagID}">${locationTags[i].LocationTag1}</label>
+        </div>`;
     }
 }
 
@@ -86,7 +119,6 @@ function initializeRangeSlider(container) {
             min: parseInt(rangeInputs[0].value),
             max: parseInt(rangeInputs[1].value)
         };
-        console.log(filterValues); // Debugging output
     }
 
     function handlePriceInput() {

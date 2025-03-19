@@ -46,4 +46,12 @@ public class VillaController : ControllerBase
 
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villaList) } }));
     }
+
+    [HttpGet("get-tags")]
+    public async Task<ActionResult<RequestResponse>> GetTags()
+    {
+        IEnumerable<PropertyTag> PropertyTags = await _dbContext.PropertyTags.ToListAsync();
+        IEnumerable<LocationTag> LocationTags = await _dbContext.LocationTags.ToListAsync();
+        return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "PropertyTags", JsonSerializer.Serialize(PropertyTags) }, { "LocationTags", JsonSerializer.Serialize(LocationTags) } }));
+    }
 }

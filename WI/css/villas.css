@@ -77,6 +77,25 @@
     border-radius: 5px;
 }
 
+#locationTagsContainer,
+#propertyTagsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-check {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+
+.filters .filterGroup .filter .form-check input[type="checkbox"] {
+    color: var(--text-color-dark);
+    width: 10px;
+    height: 10px;
+}
+
 /* double sliders */
 .range-slider {
     height: 5px;
@@ -130,4 +149,11 @@
     width: 40px;
     padding: 5px;
     color: var(--text-color-dark);
+}
+
+@media (max-width: 768px) {
+    .villaSearchContainer {
+        display: flex;
+        flex-direction: column;
+    }
 }
