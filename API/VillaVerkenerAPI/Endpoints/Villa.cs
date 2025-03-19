@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
+using VillaVerkenerAPI.Services;
 
 namespace VillaVerkenerAPI.Endpoints;
 
@@ -17,22 +19,30 @@ public class VillaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Villa>>> GetAllVillas()
+    public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
-        return await _dbContext.Villas.ToListAsync();
+        IEnumerable<Villa> villas = await _dbContext.Villas.ToListAsync();
+        return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
     }
 
-    [HttpGet("{ids}")]
-    public async Task<ActionResult<IEnumerable<SmallVilla>>> GetVillasByIds([FromRoute] string ids)
+    [HttpPost("get-by-ids")]
+    public async Task<ActionResult<RequestResponse>> GetVillasByIds([FromBody] List<int> ids)
     {
-        List<int> idList = ids.Split(',').Select(int.Parse).ToList();
-        
-        List<SmallVilla> villaList = new List<SmallVilla>();
-        await _dbContext.Villas.Where(v => idList.Contains(v.VillaId)).ForEachAsync(villa => villaList.Add(SmallVilla.From(villa)));
+        if (ids == null || !ids.Any())
+        {
+            return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Ids are required" } }));
+        }
 
+        List<SmallVilla> villaList = await _dbContext.Villas
+            .Where(v => ids.Contains(v.VillaId))
+            .Select(v => SmallVilla.From(v))
+            .ToListAsync();
 
-        if (!villaList.Any()) return NotFound();
-        return villaList;
+        if (!villaList.Any())
+        {
+            return NotFound(RequestResponse.Failed("No villas found", new Dictionary<string, string> { { "Reason", "No villas found with the given ids" } }));
+        }
+
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villaList) } }));
     }
-
 }

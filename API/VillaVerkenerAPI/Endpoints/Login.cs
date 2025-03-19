@@ -18,29 +18,48 @@ public class LoginController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpGet("{Email}/{Password}")]
-    public async Task<ActionResult<RequestResponse>> GetRequest([FromRoute] string Email, [FromRoute] string Password )
+    public class LoginRequest
     {
-        User? user = await _dbContext.Users.Where(user=>user.IsDeleted == 0).FirstOrDefaultAsync(user => Email.Equals(user.Email));
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<RequestResponse>> Login([FromBody] LoginRequest loginRequest)
+    {
+        if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
+        {
+            return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Email and Password are required" } }));
+        }
+
+        User? user = await _dbContext.Users
+            .Where(user => user.IsDeleted == 0)
+            .FirstOrDefaultAsync(user => loginRequest.Email.Equals(user.Email));
 
         if (user == null)
         {
-            return RequestResponse.Failed("Wrong", new Dictionary<string, string> { {"Reason","verkeerde Email"} });
+            return Unauthorized(RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "Incorrect Email" } }));
         }
 
-        if (PasswordHasher.ValidatePassword(Password, user.Password))
+        if (PasswordHasher.ValidatePassword(loginRequest.Password, user.Password))
         {
             Guid sessionKey = Guid.NewGuid();
-            Session NewSession = new Session();
-            NewSession.SessionKey = sessionKey.ToString();
-            NewSession.UserId = user.UserId;
-            NewSession.ExpirationDate = DateTime.UtcNow.AddDays(7);
-            await _dbContext.Sessions.AddAsync(NewSession);
-            return RequestResponse.Successfull("Success", new Dictionary<string, string> { { "SessionKey", sessionKey.ToString() } });
+            Session newSession = new Session
+            {
+                SessionKey = sessionKey.ToString(),
+                UserId = user.UserId,
+                ExpirationDate = DateTime.UtcNow.AddDays(7)
+            };
+
+            await _dbContext.Sessions.AddAsync(newSession);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "SessionKey", sessionKey.ToString() } }));
         }
         else
         {
-            return RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "verkeerde Wachtwoord" } });
+            return Unauthorized(RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "Incorrect Password" } }));
         }
     }
 }
+

@@ -2,6 +2,34 @@ class Requests {
     static get address() {
         return 'https://localhost:7290/api';
     }
+
+    // internal function to send a request
+    static async Sendrequest(method, endpoint, body) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(method, endpoint);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.onload = () => {
+                resolve(JSON.parse(xhr.responseText));
+            };
+
+            xhr.onerror = () => reject(xhr.statusText);
+            xhr.send(JSON.stringify(body));
+        });
+    }
+
+    // public function to send a request handling errors
+    static async request(method, endpoint, body) {
+        try {
+            return await this.Sendrequest(method, endpoint, body);
+        }
+        catch (error) {
+            console.error(error);
+            return { success: false, data: { Reason: error } };
+        }
+
+    }
 }
 
 class VillaRequests extends Requests {
@@ -11,47 +39,37 @@ class VillaRequests extends Requests {
     }
 
     static async getVillas() {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.address);
-            xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject(xhr.statusText);
-                }
-            };
-            xhr.onerror = () => reject(xhr.statusText);
-            xhr.send();
-        });
+        return await this.request('GET', `${this.address}/get-all`);
     }
 
     static async getVillasByIDs(ids) {
-        let idString = ids.join(',');
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${this.address}/${idString}`);
-            xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject(xhr.statusText);
-                }
-            };
-            xhr.onerror = () => reject(xhr.statusText);
-            xhr.send();
-        });
+        return await this.request('POST', `${this.address}/get-by-ids`, ids);
     }
 }
 
+
+class LoginRequest extends Requests {
+
+    static get address() {
+        return super.address + '/login';
+    }
+
+    static async login(email, password) {
+        return await this.request('POST', `${this.address}/login`, { email, password });
+    }
+}
+
+
+// models
+
 class SmallVilla {
     constructor(villa) {
-        this.id = villa.villaID;
-        this.name = villa.name;
-        this.price = villa.price;
-        this.image = villa.villaImage;
-        this.location = villa.location;
-        this.capacity = villa.capacity;
+        this.id = villa.VillaID;
+        this.name = villa.Name;
+        this.price = villa.Price;
+        this.image = villa.VillaImage;
+        this.location = villa.Location;
+        this.capacity = villa.Capacity;
 
         //TODO: remove override
         this.image = 'Assets/villas/LuckyDuck/Exterior.avif'
@@ -79,28 +97,5 @@ ${this.capacity} personen</p>
             </div>
         </div>
         `;
-    }
-}
-
-class LoginRequest extends Requests{
-
-    static get address(){
-        return super.address + '/login';
-    }
-    static async login(email, password){
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${this.address}/${email}/${password}`);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject(xhr.statusText);
-                }
-            };
-            xhr.onerror = () => reject(xhr.statusText);
-            xhr.send();
-        });
     }
 }
