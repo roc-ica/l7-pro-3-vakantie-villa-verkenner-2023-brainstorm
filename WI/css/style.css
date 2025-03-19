@@ -2,11 +2,13 @@
 :root {
 	--text-color-dark: #1B1B2F;
 	--text-color-light: #E9ECEF;
-	--primary-color: #5D7FA8;
+	--primary-color: #5D7FA8;	
 	--secondary-color: #1F4068;
 	--accent-primary: #BEA578;
 	--accent-secondary: #FFF0D4;
-	--nav-select: #0000001a;
+	--nav-select: #0000001A;
+	--text-color-error: #D8000C;
+	--background-color-error: #FFDDDD;
 }
 
 * {

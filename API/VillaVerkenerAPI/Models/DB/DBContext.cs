@@ -72,21 +72,20 @@ public partial class DBContext : DbContext
 
         modelBuilder.Entity<Session>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Session");
+            entity.HasKey(e => e.SessionId).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.Session1, "SessionID_UNIQUE").IsUnique();
+            entity.ToTable("Session");
+
+            entity.HasIndex(e => e.SessionKey, "SessionID_UNIQUE").IsUnique();
 
             entity.HasIndex(e => e.UserId, "Session_UserID_User_idx");
 
+            entity.Property(e => e.SessionId).HasColumnName("SessionID");
             entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
-            entity.Property(e => e.Session1)
-                .HasMaxLength(64)
-                .HasColumnName("Session");
+            entity.Property(e => e.SessionKey).HasMaxLength(64);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.Sessions)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("Session_UserID_User");
         });
@@ -106,7 +105,7 @@ public partial class DBContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("deleted_at");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
-            entity.Property(e => e.Password).HasMaxLength(64);
+            entity.Property(e => e.Password).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Villa>(entity =>
@@ -134,7 +133,6 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.VillaImage).WithOne(p => p.VillaNavigation)
                 .HasForeignKey<Villa>(d => d.VillaImageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Villa_VillaImageID_Image");
         });
 
