@@ -60,13 +60,15 @@ font-weight: bold;
 color: var(--text-color-dark);
 }
 
-
-#login-message {
-    display: none;
+.error-message {
+    background-color: var(--background-color-error);
+    color: var(--text-color-error);
     padding: 10px;
-    margin-top: 10px;
-    text-align: center;
+    border: 1px solid var(--text-color-error);;
     border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
 }
 
 .hidden {

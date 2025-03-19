@@ -1,33 +1,32 @@
+
 const form = document.getElementById('login-form');
 const emailField = document.getElementById('email');
 const passwordField = document.getElementById('password');
-const Login_Popup = document.getElementById('login-message');
+const Login_Popup = document.getElementById('login-message'); // Meldingsdiv
+
 form.onsubmit = async function(event) {
     event.preventDefault();
 
     const email = emailField.value;
     const password = passwordField.value;
 
-    // if (!validateEmail(email)){
-    //     alert('Voer een geldig e-mailadres in')
-    //     return;
-    // }
-
-    if (password.length < 6){
-        alert('Wachtwoord moet minimaal 8 tekens bevatten')
+    if (password.length < 6) {
+        showErrorMessage('Wachtwoord moet minimaal 8 tekens bevatten');
         return;
     }
     
-    const IsLoggedInSuccess = await LoginRequest.login(email, password)
-    console.log(IsLoggedInSuccess)
-
-    if (IsLoggedInSuccess.message === "Success"){
+    const IsLoggedInSuccess = await LoginRequest.login(email, password);
+   
+    if (IsLoggedInSuccess.message === "Success") {
         sessionStorage.setItem('SessionKey', IsLoggedInSuccess.data.SessionKey);
-       
-    }else{
-        alert('Inloggen mislukt')
-        IsLoggedInSuccess.data.Reason;
-    // Login_Popup.style.display = 'block';
+        window.location.href = 'VillaList.html';
+    } else {
+        showErrorMessage(IsLoggedInSuccess.data.Reason); 
     }
+};
 
+function showErrorMessage(message) {
+    Login_Popup.textContent = message;
+    Login_Popup.style.display = 'block';
+    Login_Popup.classList.add('error-message'); 
 }
