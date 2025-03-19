@@ -6,7 +6,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  
 }
 
 .login-container {
@@ -20,14 +19,14 @@ h2 {
     margin-bottom: 20px;
 }
 
-input[type="email"], input[type="password"] {
+input[type="email"], 
+input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border-radius: 5px;
     border: 1px solid;
     font-size: 16px;
-  
 }
 
 button {
@@ -56,8 +55,8 @@ button {
 }
 
 ::placeholder{
-font-weight: bold;
-color: var(--text-color-dark);
+    font-weight: bold;
+    color: var(--text-color-dark);
 }
 
 .error-message {

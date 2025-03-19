@@ -10,18 +10,18 @@ form.onsubmit = async function(event) {
     const email = emailField.value;
     const password = passwordField.value;
 
-    if (password.length < 6) {
+    if (password.length < 8) {
         showErrorMessage('Wachtwoord moet minimaal 8 tekens bevatten');
         return;
     }
     
-    const IsLoggedInSuccess = await LoginRequest.login(email, password);
+    const IsLoggedIn = await LoginRequest.login(email, password);
    
-    if (IsLoggedInSuccess.message === "Success") {
-        sessionStorage.setItem('SessionKey', IsLoggedInSuccess.data.SessionKey);
+    if (IsLoggedIn.message === "Success") {
+        sessionStorage.setItem('SessionKey', IsLoggedIn.data.SessionKey);
         window.location.href = 'VillaList.html';
     } else {
-        showErrorMessage(IsLoggedInSuccess.data.Reason); 
+        showErrorMessage(IsLoggedIn.data.Reason); 
     }
 };
 

@@ -1,19 +1,19 @@
 class Requests {
-    static get Adress() {
+    static get address() {
         return 'https://localhost:7290/api';
     }
 }
 
 class VillaRequests extends Requests {
 
-    static get Adress() {
-        return super.Adress + '/villa';
+    static get address() {
+        return super.address + '/villa';
     }
 
     static async getVillas() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.Adress);
+            xhr.open('GET', this.address);
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     resolve(JSON.parse(xhr.responseText));
@@ -30,7 +30,7 @@ class VillaRequests extends Requests {
         let idString = ids.join(',');
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${this.Adress}/${idString}`);
+            xhr.open('GET', `${this.address}/${idString}`);
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     resolve(JSON.parse(xhr.responseText));
@@ -84,13 +84,13 @@ ${this.capacity} personen</p>
 
 class LoginRequest extends Requests{
 
-    static get Adress(){
-        return super.Adress + '/login';
+    static get address(){
+        return super.address + '/login';
     }
     static async login(email, password){
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', `${this.Adress}/${email}/${password}`);
+            xhr.open('GET', `${this.address}/${email}/${password}`);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
