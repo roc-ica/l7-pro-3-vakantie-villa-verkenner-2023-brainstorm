@@ -57,8 +57,10 @@ public class VillaController : ControllerBase
 
     public class FilterRequest
     {
-        public List<string> PropertyTags { get; set; }
-        public List<string> LocationTags { get; set; }
+        public string Search { get; set; }
+        public string Location { get; set; }
+        public List<string> PropertyTagsIDs { get; set; }
+        public List<string> LocationTagsIDs { get; set; }
         public int MinPrice { get; set; }
         public int MaxPrice { get; set; }
         public int MinRooms { get; set; }
@@ -67,11 +69,33 @@ public class VillaController : ControllerBase
         public int MaxBathrooms { get; set; }
         public int MinGuests { get; set; }
         public int MaxGuests { get; set; }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 
     [HttpPost("get-by-filters")]
     public async Task<ActionResult<RequestResponse>> GetVillasFiltered([FromBody] FilterRequest filters)
     {
-        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Filters", JsonSerializer.Serialize(filters) } }));
+        Console.WriteLine(filters);
+
+        List<SmallVilla> filteredVillas = await _dbContext.Villas
+            .Where(v => filters.MinPrice > 0 ? v.Prijs >= filters.MinPrice : true)
+            .Where(v => filters.MaxPrice > 0 ? v.Prijs <= filters.MaxPrice : true)
+            .Where(v => filters.MinRooms > 0 ? v.Slaapkamers >= filters.MinRooms : true)
+            .Where(v => filters.MaxRooms > 0 ? v.Slaapkamers <= filters.MaxRooms : true)
+            .Where(v => filters.MinBathrooms > 0 ? v.Badkamers >= filters.MinBathrooms : true)
+            .Where(v => filters.MaxBathrooms > 0 ? v.Badkamers <= filters.MaxBathrooms : true)
+            .Where(v => filters.MinGuests > 0 ? v.Capaciteit >= filters.MinGuests : true)
+            .Where(v => filters.MaxGuests > 0 ? v.Capaciteit <= filters.MaxGuests : true)
+            .Where(v => filters.PropertyTagsIDs != null && filters.PropertyTagsIDs.Any() ? _dbContext.VillaPropertyTags.Where(vpt => filters.PropertyTagsIDs.Contains(vpt.PropertyTagId.ToString())).Select(vpt => vpt.VillaId).Contains(v.VillaId) : true)
+            .Where(v => filters.LocationTagsIDs != null && filters.LocationTagsIDs.Any() ? _dbContext.VillaLocationTags.Where(vlt => filters.LocationTagsIDs.Contains(vlt.LocationTagId.ToString())).Select(vlt => vlt.VillaId).Contains(v.VillaId) : true)
+            .Select(v => SmallVilla.From(v))
+            .ToListAsync();
+
+
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(filteredVillas) } }));
     }
 }
