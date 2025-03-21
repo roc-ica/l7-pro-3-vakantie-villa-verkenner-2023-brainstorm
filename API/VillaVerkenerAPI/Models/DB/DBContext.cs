@@ -32,7 +32,6 @@ public partial class DBContext : DbContext
     public virtual DbSet<VillaLocationTag> VillaLocationTags { get; set; }
 
     public virtual DbSet<VillaPropertyTag> VillaPropertyTags { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Image>(entity =>
@@ -148,10 +147,6 @@ public partial class DBContext : DbContext
 
             entity.HasIndex(e => e.VillaId, "VillaID_UNIQUE").IsUnique();
 
-            entity.HasIndex(e => e.VillaImageId, "VillaImageID_UNIQUE").IsUnique();
-
-            entity.HasIndex(e => e.VillaImageId, "Villa_VillaImageID_Image_idx");
-
             entity.Property(e => e.VillaId).HasColumnName("VillaID");
             entity.Property(e => e.DeletedAt)
                 .HasColumnType("datetime")
@@ -161,11 +156,6 @@ public partial class DBContext : DbContext
             entity.Property(e => e.Naam).HasMaxLength(45);
             entity.Property(e => e.Omschrijving).HasColumnType("mediumtext");
             entity.Property(e => e.Prijs).HasPrecision(12);
-            entity.Property(e => e.VillaImageId).HasColumnName("VillaImageID");
-
-            entity.HasOne(d => d.VillaImage).WithOne(p => p.VillaNavigation)
-                .HasForeignKey<Villa>(d => d.VillaImageId)
-                .HasConstraintName("Villa_VillaImageID_Image");
         });
 
         modelBuilder.Entity<VillaLocationTag>(entity =>

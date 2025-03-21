@@ -11,7 +11,7 @@ public partial class Image
 
     public string ImageLocation { get; set; } = null!;
 
-    public virtual Villa Villa { get; set; } = null!;
+    public sbyte IsPrimary { get; set; }
 
-    public virtual Villa? VillaNavigation { get; set; }
+    public virtual Villa Villa { get; set; } = null!;
 }
