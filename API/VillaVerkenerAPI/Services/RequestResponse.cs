@@ -2,7 +2,7 @@
 
 public struct RequestResponse
 {
-    public bool Success = false;
+    public bool Success { get; set; }
     public string Message { get; set; } = "";
     public Dictionary<string, string> Data { get; set; } = new Dictionary<string, string>();
 

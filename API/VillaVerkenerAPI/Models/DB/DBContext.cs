@@ -17,6 +17,10 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<Image> Images { get; set; }
 
+    public virtual DbSet<LocationTag> LocationTags { get; set; }
+
+    public virtual DbSet<PropertyTag> PropertyTags { get; set; }
+
     public virtual DbSet<Request> Requests { get; set; }
 
     public virtual DbSet<Session> Sessions { get; set; }
@@ -24,6 +28,10 @@ public partial class DBContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Villa> Villas { get; set; }
+
+    public virtual DbSet<VillaLocationTag> VillaLocationTags { get; set; }
+
+    public virtual DbSet<VillaPropertyTag> VillaPropertyTags { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,6 +53,30 @@ public partial class DBContext : DbContext
                 .HasForeignKey(d => d.VillaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Image_VillaID_Villa");
+        });
+
+        modelBuilder.Entity<LocationTag>(entity =>
+        {
+            entity.HasKey(e => e.LocationTagId).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.LocationTag1, "LocationTag_UNIQUE").IsUnique();
+
+            entity.Property(e => e.LocationTagId).HasColumnName("LocationTagID");
+            entity.Property(e => e.LocationTag1)
+                .HasMaxLength(45)
+                .HasColumnName("LocationTag");
+        });
+
+        modelBuilder.Entity<PropertyTag>(entity =>
+        {
+            entity.HasKey(e => e.PropertyTagId).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.PropertyTag1, "LocationTag_UNIQUE").IsUnique();
+
+            entity.Property(e => e.PropertyTagId).HasColumnName("PropertyTagID");
+            entity.Property(e => e.PropertyTag1)
+                .HasMaxLength(45)
+                .HasColumnName("PropertyTag");
         });
 
         modelBuilder.Entity<Request>(entity =>
@@ -134,6 +166,50 @@ public partial class DBContext : DbContext
             entity.HasOne(d => d.VillaImage).WithOne(p => p.VillaNavigation)
                 .HasForeignKey<Villa>(d => d.VillaImageId)
                 .HasConstraintName("Villa_VillaImageID_Image");
+        });
+
+        modelBuilder.Entity<VillaLocationTag>(entity =>
+        {
+            entity.HasNoKey();
+
+            entity.HasIndex(e => e.LocationTagId, "VillaLocationTags_LocationTagID_LocationTags_idx");
+
+            entity.HasIndex(e => e.VillaId, "VillaLocationTags_VillaID_Villa_idx");
+
+            entity.Property(e => e.LocationTagId).HasColumnName("LocationTagID");
+            entity.Property(e => e.VillaId).HasColumnName("VillaID");
+
+            entity.HasOne(d => d.LocationTag).WithMany()
+                .HasForeignKey(d => d.LocationTagId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("VillaLocationTags_LocationTagID_LocationTags");
+
+            entity.HasOne(d => d.Villa).WithMany()
+                .HasForeignKey(d => d.VillaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("VillaLocationTags_VillaID_Villa");
+        });
+
+        modelBuilder.Entity<VillaPropertyTag>(entity =>
+        {
+            entity.HasNoKey();
+
+            entity.HasIndex(e => e.VillaId, "VillaLocationTags_VillaID_Villa_idx");
+
+            entity.HasIndex(e => e.PropertyTagId, "VillaPropertyTags_PropertyTagID_PropertyTags_idx");
+
+            entity.Property(e => e.PropertyTagId).HasColumnName("PropertyTagID");
+            entity.Property(e => e.VillaId).HasColumnName("VillaID");
+
+            entity.HasOne(d => d.PropertyTag).WithMany()
+                .HasForeignKey(d => d.PropertyTagId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("VillaPropertyTags_PropertyTagID_PropertyTags");
+
+            entity.HasOne(d => d.Villa).WithMany()
+                .HasForeignKey(d => d.VillaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("VillaPropertyTags_VillaID_Villa");
         });
 
         OnModelCreatingPartial(modelBuilder);

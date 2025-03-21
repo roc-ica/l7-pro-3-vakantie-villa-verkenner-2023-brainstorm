@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vakantie Villa Verkenner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/smallVilla.css">
+    <link rel="stylesheet" href="css/villas.css">
+</head>
+
+<body>
+    <nav class="desktop">
+        <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+        <a href=" index.html" class="active">
+            <h3>Home</h3>
+        </a>
+        <a href="index.html">
+            <h3>Over ons</h3>
+        </a>
+        <a href="index.html">
+            <h3>
+                Villa's
+            </h3>
+        </a>
+    </nav>
+    <nav class="mobile">
+        <div class="top">
+            <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+            <button id="mobileDropDownButton" class="dropbtn" onclick="toggleDropdown()">
+                <img id="mobileDropwDownButtonIcon" src="Assets/icons/menuIcon.svg" alt="Menu Icon">
+            </button>
+        </div>
+        <div class="dropdown">
+            <div id="mobileDropDown" class="dropdown-content">
+                <a href="index.html" class="active">
+                    <h3>Home</h3>
+                </a>
+                <a href="index.html">
+                    <h3>Over ons</h3>
+                </a>
+                <a href="index.html">
+                    <h3>Villa's</h3>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="villaSearchContainer">
+            <div class="filters">
+                <div class="filterGroup">
+                    <div class="filter">
+                        <input type="search" name="search" id="searchField" placeholder="Zoek een villa"
+                            onblur="UpdateAllFilterValues()">
+                    </div>
+                    <div class="filter">
+                        <label for="locationSearchField">Locatie</label>
+                        <input type="search" name="locationSearchField" id="locationSearchField"
+                            placeholder="Zoek op locatie" onblur="UpdateAllFilterValues()">
+                    </div>
+                </div>
+                <div class="filterGroup">
+                    <h2>Prijs</h2>
+                    <div class="range">
+                        <div class="sliderbox">
+                            <div class="range-slider">
+                                <span class="range-selected"></span>
+                            </div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                        </div>
+                        <div class="rangebox">
+                            <div class="range-price">
+                                <div>
+                                    <label for="min">Min</label>
+                                    <input type="number" name="min" value="300" min="0" max="1000" step="10">
+                                </div>
+                                <div>
+                                    <label for="max">Max</label>
+                                    <input type="number" name="max" value="700" min="0" max="1000" step="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filterGroup">
+                    <h2>Capaciteit</h2>
+                    <div class="range">
+                        <div class="sliderbox">
+                            <div class="range-slider">
+                                <span class="range-selected"></span>
+                            </div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                        </div>
+                        <div class="rangebox">
+                            <div class="range-price">
+                                <div>
+                                    <label for="min">Min</label>
+                                    <input type="number" name="min" value="300" min="0" max="1000" step="10">
+                                </div>
+                                <div>
+                                    <label for="max">Max</label>
+                                    <input type="number" name="max" value="700" min="0" max="1000" step="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filterGroup">
+                    <h2>Slaapkamers</h2>
+                    <div class="range">
+                        <div class="sliderbox">
+                            <div class="range-slider">
+                                <span class="range-selected"></span>
+                            </div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                        </div>
+                        <div class="rangebox">
+                            <div class="range-price">
+                                <div>
+                                    <label for="min">Min</label>
+                                    <input type="number" name="min" value="300" min="0" max="1000" step="10">
+                                </div>
+                                <div>
+                                    <label for="max">Max</label>
+                                    <input type="number" name="max" value="700" min="0" max="1000" step="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filterGroup">
+                    <h2>Badkamers</h2>
+                    <div class="range">
+                        <div class="sliderbox">
+                            <div class="range-slider">
+                                <span class="range-selected"></span>
+                            </div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                        </div>
+                        <div class="rangebox">
+                            <div class="range-price">
+                                <div>
+                                    <label for="min">Min</label>
+                                    <input type="number" name="min" value="300" min="0" max="1000" step="10">
+                                </div>
+                                <div>
+                                    <label for="max">Max</label>
+                                    <input type="number" name="max" value="700" min="0" max="1000" step="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filterGroup">
+                    <h2>Locatie Opties</h2>
+                    <div class="filter" id="locationTagsContainer">
+                        <label for="locationTags">Locatie Opties</label>
+                    </div>
+                    <h2>Villa Opties</h2>
+                    <div class="filter" id="propertyTagsContainer">
+                        <label for="propertyTags">Villa Opties</label>
+                    </div>
+                </div>
+            </div>
+            <div class="villaList">
+                <!-- filled via javascript -->
+            </div>
+        </div>
+    </div>
+    <footer>
+        <img src="Assets/LogoBig.png" alt="Logo" class="logo">
+        <div class="links">
+            <a href="index.html" class="active">
+                <h3>Home</h3>
+            </a>
+            <a href="index.html">
+                <h3>Over ons</h3>
+            </a>
+            <a href="index.html">
+                <h3>Villa's</h3>
+            </a>
+        </div>
+        <div class="contact">
+            <h3>Contact</h3>
+            <p>Telefoon: 06-12345678</p>
+            <p>Email: email@adress.com</p>
+        </div>
+    </footer>
+</body>
+<script src="js/script.js"></script>
+<script src="js/api.js"></script>
+<script src="js/villas.js"></script>
+
+</html>
