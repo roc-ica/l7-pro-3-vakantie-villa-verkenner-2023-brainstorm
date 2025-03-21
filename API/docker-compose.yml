@@ -1,0 +1,36 @@
+services:
+  api:
+    image: villaverkenner-api
+    build:
+      context: ./VillaVerkenerAPI
+      dockerfile: Dockerfile
+    ports:
+      - "3010:8080"
+    networks:
+      - villaverkenner-net
+    volumes:
+      - villaverkenner-images:/app/Images
+    depends_on:
+      - imageserver
+    restart: always 
+  imageserver:
+    image: nginx:alpine
+    ports:
+      - "3012:80"
+    networks:
+      - villaverkenner-net
+    volumes:
+      - villaverkenner-images:/usr/share/nginx/html/Images
+    restart: always
+    
+volumes:
+  villaverkenner-images:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./DockerVolume/Images
+
+networks:
+  villaverkenner-net:
+    driver: bridge
