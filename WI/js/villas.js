@@ -16,8 +16,6 @@ const FormattedFilters = {}
 
 let Tags = [];
 let Villas = [];
-
-
 async function getVillas() {
 
     [Villas, Tags] = await Promise.all([
@@ -31,7 +29,6 @@ async function getVillas() {
     }
 
     updateVillaDisplay();
-
     if (Tags.success === false) {
         console.log(Tags.error);
         return;
