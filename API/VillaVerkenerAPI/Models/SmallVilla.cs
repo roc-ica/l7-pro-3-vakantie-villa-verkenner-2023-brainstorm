@@ -11,18 +11,18 @@ namespace VillaVerkenerAPI.Models
         public int Capacity { get; set; }
         public int Bedrooms { get; set; }
         public int Bathrooms { get; set; }
-        public Image VillaImage { get; set; }
+        public string VillaImagePath { get; set; }
 
-        public SmallVilla(int villaID, string name, decimal price, string location, int capacity, Image villaImage, int bedrooms, int bathrooms)
+        public SmallVilla(int villaID, string name, decimal price, string location, int capacity, string villaImagePath, int bedrooms, int bathrooms)
         {
             VillaID = villaID;
             Name = name;
             Price = price;
             Location = location;
             Capacity = capacity;
-            VillaImage = villaImage;
             Bedrooms = bedrooms;
             Bathrooms = bathrooms;
+            VillaImagePath = villaImagePath;
         }
         public SmallVilla(Villa villa)
         {
@@ -31,9 +31,9 @@ namespace VillaVerkenerAPI.Models
             Price = villa.Prijs;
             Location = villa.Locatie;
             Capacity = villa.Capaciteit;
-            VillaImage = villa.VillaImage;
             Bedrooms = villa.Slaapkamers;
             Bathrooms = villa.Badkamers;
+            VillaImagePath = villa.Images.Count > 0 ? villa.Images.Where(image => image.IsPrimary == 1).First().ImageLocation : "";
         }
 
         public static SmallVilla From(Villa villa)
