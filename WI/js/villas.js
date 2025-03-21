@@ -1,4 +1,3 @@
-// Global dictionary to store filter values
 const filterValues = {
     "PropertyTags": [],
     "LocationTags": [],
@@ -6,7 +5,6 @@ const filterValues = {
     "Location": "",
 };
 
-// Configuration object for dynamic min/max values
 const filterConfig = {
     "Prijs": { min: 10, max: 500 },
     "Capaciteit": { min: 1, max: 60 },
@@ -14,23 +12,25 @@ const filterConfig = {
     "Badkamers": { min: 1, max: 10 }
 };
 
+const FormattedFilters = {}
+
+let Tags = [];
+let Villas = [];
+
+
 async function getVillas() {
-    const [villas, Tags] = await Promise.all([
+
+    [Villas, Tags] = await Promise.all([
         VillaRequests.getVillas(),
         VillaRequests.getTags()
     ]);
-    console.log(villas);
-    console.log(Tags);
-    if (villas.success === false) {
-        console.log(villas.error);
+
+    if (Villas.success === false) {
+        console.log(Villas.error);
         return;
     }
-    let villaData = JSON.parse(villas.data.Villas);
-    document.getElementsByClassName('villaList')[0].innerHTML = '';
-    for (let i = 0; i < villaData.length; i++) {
-        const villa = new SmallVilla(villaData[i]);
-        document.getElementsByClassName('villaList')[0].innerHTML += villa.html;
-    }
+
+    updateVillaDisplay();
 
     if (Tags.success === false) {
         console.log(Tags.error);
@@ -38,8 +38,7 @@ async function getVillas() {
     }
     let PropertyTags = JSON.parse(Tags.data.PropertyTags);
     let locationTags = JSON.parse(Tags.data.LocationTags);
-    console.log(PropertyTags);
-    console.log(locationTags);
+
     const PropertyTagsContainer = document.getElementById('propertyTagsContainer');
     const locationTagsContainer = document.getElementById('locationTagsContainer');
 
@@ -48,16 +47,34 @@ async function getVillas() {
 
     for (let i = 0; i < PropertyTags.length; i++) {
         PropertyTagsContainer.innerHTML += `<div class="form-check">
-            <input class="form-check-input" type="checkbox" value="${PropertyTags[i].PropertyTagID}" id="propertyTag${PropertyTags[i].PropertyTagID}" onchange="UpdateAllFilterValues()">
+            <input class="form-check-input tagCheckBox" type="checkbox" value="${PropertyTags[i].PropertyTagId}" id="propertyTag${PropertyTags[i].PropertyTagId}" onchange="UpdateAllFilterValues()">
             <label class="form-check-label" for="propertyTag${PropertyTags[i].PropertyTagID}">${PropertyTags[i].PropertyTag1}</label>
         </div>`;
     }
 
     for (let i = 0; i < locationTags.length; i++) {
         locationTagsContainer.innerHTML += `<div class="form-check">
-            <input class="form-check-input" type="checkbox" value="${locationTags[i].LocationTagID}" id="locationTag${locationTags[i].LocationTagID}" onchange="UpdateAllFilterValues()">
-            <label class="form-check-label" for="locationTag${locationTags[i].LocationTagID}">${locationTags[i].LocationTag1}</label>
+            <input class="form-check-input" type="checkbox" value="${locationTags[i].LocationTagId}" id="locationTag${locationTags[i].LocationTagId}" onchange="UpdateAllFilterValues()">
+            <label class="form-check-label" for="locationTag${locationTags[i].LocationTagId}">${locationTags[i].LocationTag1}</label>
         </div>`;
+    }
+}
+
+function updateVillaDisplay() {
+    let villaData = JSON.parse(Villas.data.Villas);
+    document.getElementsByClassName('villaList')[0].innerHTML = '';
+
+    if (villaData.length === 0) {
+        document.getElementsByClassName('villaList')[0].innerHTML = `
+            <div class="villaCard">
+                <p style="margin-left:5px;">No villas found</p>
+            </div>
+        `;
+        return;
+    }
+    for (let i = 0; i < villaData.length; i++) {
+        const villa = new SmallVilla(villaData[i]);
+        document.getElementsByClassName('villaList')[0].innerHTML += villa.html;
     }
 }
 
@@ -67,7 +84,6 @@ function initializeRangeSlider(container) {
     const rangePrices = container.querySelectorAll(".range-price input");
     const filterTitle = container.closest(".filterGroup").querySelector("h2").innerText.trim();
 
-    // Get dynamic min/max values from config or default to generic values
     const initialMin = filterConfig[filterTitle]?.min || 0;
     const initialMax = filterConfig[filterTitle]?.max || 1000;
     const settings = { minRangeGap: 1, stepSize: 1 };
@@ -168,7 +184,8 @@ function initializeRangeSlider(container) {
 let timeout = null;
 
 function UpdateAllFilterValues() {
-    const propertyTags = Array.from(document.querySelectorAll("#propertyTagsContainer input:checked")).map(input => input.value);
+    const propertyTags = Array.from(document.querySelectorAll(".tagCheckBox:checked")).map(input => input.value);
+    console.log(propertyTags);
     const locationTags = Array.from(document.querySelectorAll("#locationTagsContainer input:checked")).map(input => input.value);
     const search = document.getElementById("searchField").value;
     const location = document.getElementById("locationSearchField").value;
@@ -176,15 +193,33 @@ function UpdateAllFilterValues() {
     filterValues["LocationTags"] = locationTags;
     filterValues["Search"] = search;
     filterValues["Location"] = location;
-    console.log(filterValues);
+
+    FormattedFilters["PropertyTagsIDs"] = propertyTags
+    FormattedFilters["LocationTagsIDs"] = locationTags
+    FormattedFilters["Search"] = search
+    FormattedFilters["Location"] = location
+    FormattedFilters["MinPrice"] = filterValues["Prijs"]?.min
+    FormattedFilters["MaxPrice"] = filterValues["Prijs"]?.max
+    FormattedFilters["MinCapacity"] = filterValues["Capaciteit"]?.min
+    FormattedFilters["MaxCapacity"] = filterValues["Capaciteit"]?.max
+    FormattedFilters["MinBedrooms"] = filterValues["Slaapkamers"]?.min
+    FormattedFilters["MaxBedrooms"] = filterValues["Slaapkamers"]?.max
+    FormattedFilters["MinBathrooms"] = filterValues["Badkamers"]?.min
+    FormattedFilters["MaxBathrooms"] = filterValues["Badkamers"]?.max
+
     if (timeout) {
         clearTimeout(timeout);
     }
     timeout = setTimeout(async () => {
-        let data = await VillaRequests.getVillasByFilters(filterValues);
-        console.log(data);
+        Villas = await VillaRequests.getVillasByFilters(FormattedFilters);
+        if (Villas.success === false) {
+            console.log(Villas.error);
+            return;
+        }
+        updateVillaDisplay();
     }, 500);
 }
 
 getVillas();
 document.querySelectorAll(".range").forEach(slider => initializeRangeSlider(slider));
+UpdateAllFilterValues();
