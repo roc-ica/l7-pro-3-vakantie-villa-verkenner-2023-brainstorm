@@ -1,0 +1,92 @@
+.villaContainer {
+    margin: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 30vh 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "main main main"
+        "fotos fotos side"
+        "fotos fotos side";
+}
+
+.main {
+    grid-area: main;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    border-radius: 5px;
+}
+
+.main img {
+    width: 25vw;
+    height: auto;
+    max-height: 25vh;
+}
+
+.main #mainContent {
+    margin-left: 1rem;
+}
+
+.side {
+    grid-area: side;
+}
+
+.side .infoBlock .details,
+.side .infoBlock .actions {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    background-color: var(--primary-color);
+}
+
+.side .infoBlock .details div {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0px 0px 10px;
+}
+
+.side .infoBlock .details div img {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+}
+
+.side .infoBlock .actions {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.side .infoBlock .actions button {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--text-color-light);
+}
+
+.side .infoBlock .actions button#flyerButton {
+    background-color: var(--secondary-color);
+}
+
+.side .infoBlock .actions button#contactButton {
+    background-color: var(--accent-primary);
+}
+
+.fotos {
+    grid-area: fotos;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.fotos img {
+    width: 25vw;
+    height: auto;
+    max-height: 25vh;
+    margin: 0px 10px 10px 0px;
+}
