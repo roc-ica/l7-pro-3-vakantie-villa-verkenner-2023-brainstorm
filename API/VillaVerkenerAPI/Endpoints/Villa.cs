@@ -82,6 +82,8 @@ public class VillaController : ControllerBase
         Console.WriteLine(filters);
 
         List<SmallVilla> filteredVillas = await _dbContext.Villas
+            .Where(v => filters.Search != null ? v.Naam.Contains(filters.Search) : true)
+            .Where(v => filters.Location != null ? v.Locatie.Contains(filters.Location) : true)
             .Where(v => filters.MinPrice > 0 ? v.Prijs >= filters.MinPrice : true)
             .Where(v => filters.MaxPrice > 0 ? v.Prijs <= filters.MaxPrice : true)
             .Where(v => filters.MinRooms > 0 ? v.Slaapkamers >= filters.MinRooms : true)
