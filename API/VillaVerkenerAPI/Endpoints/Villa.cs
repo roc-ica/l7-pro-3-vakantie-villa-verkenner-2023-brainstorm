@@ -55,6 +55,25 @@ public class VillaController : ControllerBase
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villaList) } }));
     }
 
+    [HttpPost("get-by-id")]
+    public async Task<ActionResult<RequestResponse>> GetVillaById([FromBody] int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Id is required" } }));
+        }
+        Villa? villa = await _dbContext.Villas
+            .Where(v => v.VillaId == id)
+            .FirstOrDefaultAsync();
+        if (villa == null)
+        {
+            return NotFound(RequestResponse.Failed("No villa found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
+        }
+        villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+        DetailedVilla smallVilla = DetailedVilla.From(villa);
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
+    }
+
     [HttpGet("get-tags")]
     public async Task<ActionResult<RequestResponse>> GetTags()
     {

@@ -90,3 +90,28 @@
     max-height: 25vh;
     margin: 0px 10px 10px 0px;
 }
+
+@media (max-width: 768px) {
+    .villaContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .main img {
+        width: 100%;
+        height: auto;
+        max-height: 25vh;
+    }
+
+    .fotos img {
+        width: 100%;
+        height: auto;
+        max-height: 25vh;
+    }
+}

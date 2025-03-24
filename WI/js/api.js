@@ -33,7 +33,6 @@ class Requests {
             console.error(error);
             return { success: false, data: { Reason: error } };
         }
-
     }
 }
 
@@ -84,12 +83,11 @@ class SmallVilla {
         this.id = villa.VillaID;
         this.name = villa.Name;
         this.price = villa.Price;
-        this.image = `Assets\\villas\\${villa.VillaImagePath}`;//TODO: change to correct path
+        this.image = villa.VillaImagePath;
         this.location = villa.Location;
         this.capacity = villa.Capacity;
         this.bedrooms = villa.Bedrooms;
         this.bathrooms = villa.Bathrooms;
-
     }
 
     get html() {

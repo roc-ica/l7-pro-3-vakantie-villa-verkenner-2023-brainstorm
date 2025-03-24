@@ -12,7 +12,7 @@ services:
       - villaverkenner-images:/app/Images
     depends_on:
       - imageserver
-    restart: always 
+    restart: always
   imageserver:
     image: nginx:alpine
     ports:
@@ -22,7 +22,7 @@ services:
     volumes:
       - villaverkenner-images:/usr/share/nginx/html/Images
     restart: always
-    
+
 volumes:
   villaverkenner-images:
     driver: local
