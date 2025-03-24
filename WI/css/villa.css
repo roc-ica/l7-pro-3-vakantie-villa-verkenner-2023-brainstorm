@@ -85,9 +85,8 @@
 }
 
 .fotos img {
-    width: 25vw;
-    height: auto;
     max-height: 25vh;
+    max-width: 25vw;
     margin: 0px 10px 10px 0px;
 }
 
@@ -110,8 +109,9 @@
     }
 
     .fotos img {
+        max-width: none;
+        max-height: none;
         width: 100%;
         height: auto;
-        max-height: 25vh;
     }
 }
