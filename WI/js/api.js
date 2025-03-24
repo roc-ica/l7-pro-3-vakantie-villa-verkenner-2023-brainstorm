@@ -1,6 +1,6 @@
 class Requests {
     static get address() {
-        return 'https://localhost:7290/api';
+        return 'http://localhost:3010/api';
     }
 
     // internal function to send a request
@@ -15,7 +15,12 @@ class Requests {
             };
 
             xhr.onerror = () => reject(xhr.statusText);
-            xhr.send(JSON.stringify(body));
+            if (body) {
+                xhr.send(JSON.stringify(body));
+            }
+            else {
+                xhr.send()
+            }
         });
     }
 
@@ -46,9 +51,14 @@ class VillaRequests extends Requests {
         return await this.request('POST', `${this.address}/get-by-ids`, ids);
     }
 
+    static async getVillaByID(id) {
+        return await this.request('POST', `${this.address}/get-by-id`, id);
+    }
+
     static async getTags() {
         return await this.request('GET', `${this.address}/get-tags`);
     }
+
     static async getVillasByFilters(filters) {
         return await this.request('POST', `${this.address}/get-by-filters`, filters);
     }
