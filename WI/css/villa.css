@@ -2,7 +2,7 @@
     margin: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 30vh 1fr 1fr;
+    grid-template-rows: 300px 1fr 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -23,9 +23,8 @@
 }
 
 .main img {
-    width: 25vw;
     height: auto;
-    max-height: 25vh;
+    max-width: 400px;
 }
 
 .main #mainContent {
@@ -103,9 +102,8 @@
 
 
     .main img {
-        width: 100%;
         height: auto;
-        max-height: 25vh;
+        max-width: 100%;
     }
 
     .fotos img {
