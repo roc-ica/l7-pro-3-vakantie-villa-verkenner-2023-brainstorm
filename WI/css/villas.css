@@ -1,0 +1,159 @@
+.villaSearchContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "filters villaList villaList"
+        "filters villaList villaList"
+        "filters villaList villaList";
+}
+
+.filters {
+    grid-area: filters;
+}
+
+.villaList {
+    grid-area: villaList;
+    margin: 5px;
+}
+
+.villaList .villaCard {
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+}
+
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.filters .filterGroup {
+    margin-bottom: 10px;
+}
+
+.filters .filterGroup .filter {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
+.filters .filterGroup h2 {
+    margin: 0px;
+    margin-top: 5px;
+}
+
+.filters .filterGroup .filter label {
+    margin-right: 5px;
+}
+
+.filters .filterGroup .filter input {
+    margin-right: 5px;
+    color: var(--text-color-dark);
+    width: 100%;
+}
+
+.sliderbox {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
+.rangebox {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
+#locationTagsContainer,
+#propertyTagsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-check {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+
+.filters .filterGroup .filter .form-check input[type="checkbox"] {
+    color: var(--text-color-dark);
+    width: 10px;
+    height: 10px;
+}
+
+/* double sliders */
+.range-slider {
+    height: 5px;
+    position: relative;
+    background-color: #e1e9f6;
+    border-radius: 2px;
+}
+
+.range-selected {
+    height: 100%;
+    position: absolute;
+    border-radius: 5px;
+    background-color: #1b53c0;
+}
+
+.range-input {
+    position: relative;
+}
+
+.range-input input {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    top: calc((24px + 7px) * -1);
+    background: none;
+    pointer-events: none;
+    appearance: none;
+}
+
+.range-input input::-webkit-slider-thumb,
+.range-input input::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 3px solid #1b53c0;
+    background-color: #fff;
+    pointer-events: auto;
+    appearance: none;
+}
+
+.range-price {
+    margin: 30px 0;
+    padding: 16px;
+    gap: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.range-price input {
+    width: 40px;
+    padding: 5px;
+    color: var(--text-color-dark);
+}
+
+@media (max-width: 768px) {
+    .villaSearchContainer {
+        display: flex;
+        flex-direction: column;
+    }
+}

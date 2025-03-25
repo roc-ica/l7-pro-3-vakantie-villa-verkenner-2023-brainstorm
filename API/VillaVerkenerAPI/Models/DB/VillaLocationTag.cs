@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace VillaVerkenerAPI.Models.DB;
+
+public partial class VillaLocationTag
+{
+    public int VillaId { get; set; }
+
+    public int LocationTagId { get; set; }
+
+    public virtual LocationTag LocationTag { get; set; } = null!;
+
+    public virtual Villa Villa { get; set; } = null!;
+}
