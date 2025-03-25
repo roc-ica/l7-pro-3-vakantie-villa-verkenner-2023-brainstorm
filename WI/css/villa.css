@@ -25,6 +25,7 @@
 .main img {
     height: auto;
     max-width: 400px;
+    max-height: 250px;
 }
 
 .main #mainContent {
