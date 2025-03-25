@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vakantie Villa Verkenner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/villa.css">
+</head>
+
+<body>
+    <nav class="desktop">
+        <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+        <a href=" index.html" class="active">
+            <h3>Home</h3>
+        </a>
+        <a href="index.html">
+            <h3>Over ons</h3>
+        </a>
+        <a href="villas.html">
+            <h3>
+                Villa's
+            </h3>
+        </a>
+    </nav>
+    <nav class="mobile">
+        <div class="top">
+            <img src="Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+            <button id="mobileDropDownButton" class="dropbtn" onclick="toggleDropdown()">
+                <img id="mobileDropwDownButtonIcon" src="Assets/icons/menuIcon.svg" alt="Menu Icon">
+            </button>
+        </div>
+        <div class="dropdown">
+            <div id="mobileDropDown" class="dropdown-content">
+                <a href="index.html" class="active">
+                    <h3>Home</h3>
+                </a>
+                <a href="index.html">
+                    <h3>Over ons</h3>
+                </a>
+                <a href="index.html">
+                    <h3>Villa's</h3>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="villaContainer">
+            <div class="main">
+                <img src="Assets/villas/LuckyDuck/Exterior.avif" alt="Villa" class="villaImage" id="villaImage">
+                <div id="mainContent">
+                    <h1 id="villaName"></h1>
+                    <p id="villaDescription"></p>
+
+                </div>
+            </div>
+            <div class="side">
+                <div class="infoBlock">
+                    <div class="details">
+                        <div id="villaPrice"><img src="Assets/icons/priceIcon.svg" alt="Price icon">
+                            <p></p>
+                        </div>
+                        <div id="villaLocation"><img src="Assets/icons/locationIcon.svg" alt="Location icon">
+                            <p></p>
+                        </div>
+                        <div id="villaCapacity"><img src="Assets/icons/personIcon.svg" alt="Person icon">
+                            <p></p>
+                        </div>
+                        <div id="villaBedrooms"><img src="Assets/icons/bedIcon.svg" alt="Bed icon">
+                            <p></p>
+                        </div>
+                        <div id="villaBathrooms"><img src="Assets/icons/bathIcon.svg" alt="Bath icon">
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button id="flyerButton" onclick="downloadFlyer()">Download Flyer</button>
+                        <button id="contactButton" onclick="contact()">Verzoek details</button>
+                    </div>
+                </div>
+            </div>
+            <div class="fotos" id="fotoList">
+            </div>
+        </div>
+    </div>
+    <footer>
+        <img src="Assets/LogoBig.png" alt="Logo" class="logo">
+        <div class="links">
+            <a href="index.html" class="active">
+                <h3>Home</h3>
+            </a>
+            <a href="index.html">
+                <h3>Over ons</h3>
+            </a>
+            <a href="villas.html">
+                <h3>Villa's</h3>
+            </a>
+        </div>
+        <div class="contact">
+            <h3>Contact</h3>
+            <p>Telefoon: 06-12345678</p>
+            <p>Email: email@adress.com</p>
+        </div>
+    </footer>
+</body>
+<script src="js/script.js"></script>
+<script src="js/api.js"></script>
+<script src="js/villaView.js"></script>
+
+</html>

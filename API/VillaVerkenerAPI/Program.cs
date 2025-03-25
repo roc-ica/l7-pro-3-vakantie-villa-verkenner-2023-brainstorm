@@ -19,6 +19,12 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseMySQL(connectionString));
 
+// Configure Kestrel to listen on port 8080
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080);
+});
+
 var app = builder.Build();
 
 // Allow localhost
@@ -26,6 +32,8 @@ app.UseCors(policy =>
     policy.WithOrigins("http://localhost", "http://villaverkenner.local")
           .AllowAnyMethod()
           .AllowAnyHeader());
+
+
 
 app.Use(async (context, next) =>
 {
