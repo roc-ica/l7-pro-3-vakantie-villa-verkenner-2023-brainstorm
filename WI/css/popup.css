@@ -37,23 +37,35 @@
     margin: 0px;
 }
 
-#message {
+textarea {
     height: 50px;
+    resize: none;
 }
 
+textarea,
 input {
     border: none;
     border-radius: 4px;
 }
 
-input::placeholder {
+textarea:focus,
+input:focus {
+    outline: none;
+}
+
+textarea,
+input,
+::placeholder {
     color: var(--text-color-dark);
+}
+
+#errorMessage {
+    color: var(--text-color-error);
 }
 
 .close {
     color: var(--accent-secondary);
-    padding: 10px;
-    padding-left: 0px;
+    padding: 10px 10px 0px 0px;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;

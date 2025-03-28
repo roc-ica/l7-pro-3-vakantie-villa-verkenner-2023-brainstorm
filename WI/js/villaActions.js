@@ -8,3 +8,18 @@ let closeIcon = document.getElementsByClassName("close")[0];
 closeIcon.onclick = function () {
     modal.style.display = "none";
 }
+
+let errorMessage = document.getElementById("errorMessage");
+let emailInput = document.getElementById("email");
+
+//Error handler
+emailInput.onblur = function () {
+    let emailInputValue = emailInput.value;
+    const isValidEmail = /\S+@\S+\.\S+/.test(emailInputValue);
+
+    if (!isValidEmail) {
+        errorMessage.innerHTML = "Ongeldige email.";
+    } else {
+        errorMessage.innerHTML = "";
+    }
+}
