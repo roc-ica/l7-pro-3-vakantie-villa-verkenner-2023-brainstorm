@@ -15,5 +15,7 @@ public partial class Request
 
     public DateTime? DeletedAt { get; set; }
 
+    public string Message { get; set; } = null!;
+
     public virtual Villa Villa { get; set; } = null!;
 }
