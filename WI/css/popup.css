@@ -1,3 +1,9 @@
+.modalText,
+#errorMessage,
+#confirmRequestButton {
+    margin: 0px;
+}
+
 #requestInfoModal {
     display: none;
     position: fixed;
@@ -16,16 +22,19 @@
     width: 30%;
 }
 
+.modalHeader,
 .modalForm {
     display: flex;
+}
+
+.modalForm {
     flex-direction: column;
-    padding: 0px 120px 0px 120px;
+    padding: 0px 120px;
     justify-content: space-evenly;
     height: 300px;
 }
 
 .modalHeader {
-    display: flex;
     justify-content: end;
 }
 
@@ -33,40 +42,37 @@
     color: var(--text-color-light);
     text-align: center;
     font-size: 25px;
-    font-family: 'Viga', sans-serif;
-    margin: 0px;
+    font-family: Viga, sans-serif;
 }
 
-textarea {
+#message {
     height: 50px;
     resize: none;
 }
 
-textarea,
-input {
+#message,
+#email {
     border: none;
     border-radius: 4px;
 }
 
-textarea:focus,
-input:focus {
+#message:focus,
+#email:focus {
     outline: none;
 }
 
-textarea,
-input,
+#message,
+#email,
 ::placeholder {
     color: var(--text-color-dark);
+    font-weight: 600;
 }
 
 #errorMessage {
     color: var(--text-color-error);
 }
 
-.close {
-    color: var(--accent-secondary);
+#closeModalButton {
     padding: 10px 10px 0px 0px;
-    font-size: 28px;
-    font-weight: bold;
     cursor: pointer;
 }

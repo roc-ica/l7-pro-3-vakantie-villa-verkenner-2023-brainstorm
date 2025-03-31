@@ -10,14 +10,9 @@ namespace VillaVerkenerAPI.Endpoints;
 
 [Route("api/moreInfoRequest")]
 [ApiController]
-public class MoreInfoRequestController : ControllerBase
+public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
 {
-    private readonly DBContext _dbContext;
-
-    public MoreInfoRequestController(DBContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly DBContext _dbContext = dbContext;
 
     public class MoreInfoRequest
     {
@@ -46,7 +41,4 @@ public class MoreInfoRequestController : ControllerBase
 
         return Ok(RequestResponse.Successfull("SUCCESS", new Dictionary<string, string> { { moreInfoRequest.Email, moreInfoRequest.Message } }));
     }
-
-
 }
-
