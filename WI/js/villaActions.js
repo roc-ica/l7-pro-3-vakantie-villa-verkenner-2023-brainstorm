@@ -1,6 +1,6 @@
 let modal = document.getElementById("requestInfoModal");
 let emailInput = document.getElementById("email");
-let message = document.getElementById("message");
+let messageInput = document.getElementById("message");
 let errorMessage = document.getElementById("errorMessage");
 
 //Error handler
@@ -15,21 +15,21 @@ emailInput.onblur = function () {
     }
 }
 
-message.onblur = function () {
-    let messageValue = message.value;
+messageInput.onblur = function () {
+    let messageInputValue = messageInput.value;
 
-    if (messageValue === "") {
+    if (messageInputValue === "") {
         errorMessage.innerHTML = "Vul in alle velden.";
     } else {
         errorMessage.innerHTML = "";
     }
 }
 
-function contactForMoreInfo() {
+function openMoreInfoRequestModal() {
     modal.style.display = "flex";
 }
 
-async function requestMoreInfo() {
+async function confirmRequest() {
     await MoreInfoRequest.requestMoreInfo(id, emailInput.value, message.value);
     closeModal();
 }

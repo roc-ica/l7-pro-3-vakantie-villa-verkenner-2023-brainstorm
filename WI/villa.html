@@ -77,7 +77,7 @@
                     </div>
                     <div class="actions">
                         <button type="button" id="flyerButton" onclick="downloadFlyer()">Download Flyer</button>
-                        <button type="button" id="moreInfoRequestButton" onclick="contactForMoreInfo()">Verzoek
+                        <button type="button" id="moreInfoRequestButton" onclick="openMoreInfoRequestModal()">Verzoek
                             details</button>
 
                         <div id="requestInfoModal">
@@ -88,11 +88,13 @@
                                 </div>
                                 <div class="modalForm">
                                     <p class="modalText">Waar kunnen we contact opnemen?</p>
+
                                     <input type="text" id="email" placeholder="Email">
                                     <textarea type="text" id="message" placeholder="Bericht"></textarea>
+
                                     <p id="errorMessage"></p>
                                     <button type="submit" title="Verzoek details" id="confirmRequestButton"
-                                        onclick="requestMoreInfo()">Verzend
+                                        onclick="confirmRequest()">Verzend
                                         verzoek</button>
                                 </div>
                             </div>
