@@ -11,6 +11,7 @@ closeIcon.onclick = function () {
 
 let errorMessage = document.getElementById("errorMessage");
 let emailInput = document.getElementById("email");
+let message = document.getElementById("message");
 
 //Error handler
 emailInput.onblur = function () {
@@ -22,4 +23,22 @@ emailInput.onblur = function () {
     } else {
         errorMessage.innerHTML = "";
     }
+}
+
+message.onblur = function () {
+    let emailInputValue = emailInput.value;
+    const isValidEmail = /\S+@\S+\.\S+/.test(emailInputValue);
+
+    if (!isValidEmail) {
+        errorMessage.innerHTML = "Ongeldige email.";
+    } else {
+        errorMessage.innerHTML = "";
+    }
+}
+
+async function requestMoreInfo() {
+    await MoreInfoRequest.requestMoreInfo(id, emailInput.value, message.value);
+    modal.style.display = "none";
+    emailInput.value = "";
+    message.value = "";
 }
