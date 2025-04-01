@@ -89,8 +89,9 @@
                                 <div class="modalForm">
                                     <p class="modalText">Waar kunnen we contact opnemen?</p>
 
-                                    <input type="text" id="email" placeholder="Email">
-                                    <textarea type="text" id="message" placeholder="Bericht"></textarea>
+                                    <input type="text" id="email" placeholder="Email" onblur="emailValidation()" />
+                                    <textarea type="text" id="message" placeholder="Bericht"
+                                        onblur="messageValidation()"></textarea>
 
                                     <p id="errorMessage"></p>
                                     <button type="submit" title="Verzoek details" id="confirmRequestButton"

@@ -4,24 +4,31 @@ let messageInput = document.getElementById("message");
 let errorMessage = document.getElementById("errorMessage");
 
 //Error handler
-emailInput.onblur = function () {
+let emailIsValid = true;
+let messageIsValid = true;
+
+function emailValidation() {
     let emailInputValue = emailInput.value;
     const isValidEmail = /\S+@\S+\.\S+/.test(emailInputValue);
 
     if (!isValidEmail) {
         errorMessage.innerHTML = "Ongeldige email.";
+        emailIsValid = false;
     } else {
         errorMessage.innerHTML = "";
+        emailIsValid = true;
     }
 }
 
-messageInput.onblur = function () {
+function messageValidation() {
     let messageInputValue = messageInput.value;
 
     if (messageInputValue === "") {
         errorMessage.innerHTML = "Vul in alle velden.";
+        messageIsValid = false;
     } else {
         errorMessage.innerHTML = "";
+        messageIsValid = true;
     }
 }
 
@@ -30,8 +37,12 @@ function openMoreInfoRequestModal() {
 }
 
 async function confirmRequest() {
-    await MoreInfoRequest.requestMoreInfo(id, emailInput.value, message.value);
-    closeModal();
+    emailValidation();
+    messageValidation();
+    if (emailIsValid && messageIsValid) {
+        await MoreInfoRequest.requestMoreInfo(id, emailInput.value, message.value);
+        closeModal();
+    }
 }
 
 function closeModal() {
