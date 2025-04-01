@@ -32,6 +32,7 @@ public partial class DBContext : DbContext
     public virtual DbSet<VillaLocationTag> VillaLocationTags { get; set; }
 
     public virtual DbSet<VillaPropertyTag> VillaPropertyTags { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Image>(entity =>
@@ -94,6 +95,7 @@ public partial class DBContext : DbContext
                 .HasColumnName("deleted_at");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+            entity.Property(e => e.Message).HasMaxLength(255);
             entity.Property(e => e.VillaId).HasColumnName("VillaID");
 
             entity.HasOne(d => d.Villa).WithMany(p => p.Requests)

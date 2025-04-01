@@ -75,6 +75,15 @@ class LoginRequest extends Requests {
     }
 }
 
+class MoreInfoRequest extends Requests {
+    static get address() {
+        return super.address + '/moreInfoRequest';
+    }
+
+    static async requestMoreInfo(villaId, email, message) {
+        return await this.request('POST', `${this.address}/moreInfoRequest`, { villaId, email, message });
+    }
+}
 
 // models
 

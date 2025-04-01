@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VillaVerkenerAPI.Models.DB;
+﻿namespace VillaVerkenerAPI.Models.DB;
 
 public partial class Request
 {
@@ -14,6 +11,8 @@ public partial class Request
     public sbyte IsDeleted { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    public string Message { get; set; } = null!;
 
     public virtual Villa Villa { get; set; } = null!;
 }

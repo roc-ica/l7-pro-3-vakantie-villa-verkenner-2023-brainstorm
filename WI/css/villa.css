@@ -73,7 +73,8 @@
     background-color: var(--secondary-color);
 }
 
-.side .infoBlock .actions button#contactButton {
+.side .infoBlock .actions button#confirmRequestButton,
+.side .infoBlock .actions button#moreInfoRequestButton {
     background-color: var(--accent-primary);
 }
 
