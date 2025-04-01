@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
@@ -55,8 +56,15 @@ public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
     
     private static bool IsValidEmail(string email)
     {
-        string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+        try
+        {
+            MailAddress m = new (email);
 
-        return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }
