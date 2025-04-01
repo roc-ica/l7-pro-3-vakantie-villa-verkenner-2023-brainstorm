@@ -1,7 +1,7 @@
 const modal = document.getElementById("requestInfoModal");
-let emailInput = document.getElementById("email");
-let messageInput = document.getElementById("message");
-let errorMessage = document.getElementById("errorMessage");
+const emailInput = document.getElementById("email");
+const messageInput = document.getElementById("message");
+const errorMessage = document.getElementById("errorMessage");
 
 //Error handler
 let emailIsValid = true;
