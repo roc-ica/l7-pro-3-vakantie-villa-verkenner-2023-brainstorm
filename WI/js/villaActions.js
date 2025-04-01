@@ -1,4 +1,4 @@
-let modal = document.getElementById("requestInfoModal");
+const modal = document.getElementById("requestInfoModal");
 let emailInput = document.getElementById("email");
 let messageInput = document.getElementById("message");
 let errorMessage = document.getElementById("errorMessage");

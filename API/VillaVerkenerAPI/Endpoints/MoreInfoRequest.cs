@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text.RegularExpressions;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
@@ -8,18 +9,18 @@ using static VillaVerkenerAPI.Endpoints.MoreInfoRequestController;
 
 namespace VillaVerkenerAPI.Endpoints;
 
+public class MoreInfoRequest
+{
+    public required int VillaId { get; set; }
+    public required string Email { get; set; }
+    public required string Message { get; set; }
+}
+
 [Route("api/moreInfoRequest")]
 [ApiController]
 public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
 {
     private readonly DBContext _dbContext = dbContext;
-
-    public class MoreInfoRequest
-    {
-        public required int VillaId { get; set; }
-        public required string Email { get; set; }
-        public required string Message { get; set; }
-    }
 
     [HttpPost("moreInfoRequest")]
     public async Task<ActionResult<RequestResponse>> RequestMoreInfo([FromBody] MoreInfoRequest moreInfoRequest)
@@ -27,6 +28,16 @@ public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
         if (string.IsNullOrEmpty(moreInfoRequest.Email) || string.IsNullOrEmpty(moreInfoRequest.Message))
         {
             return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Email and Message are required" } }));
+        }
+
+        if (!IsValidEmail(moreInfoRequest.Email))
+        {
+            return BadRequest(RequestResponse.Failed("Invalid email", new Dictionary<string, string> { { "Reason", "Invalid email" } }));
+        }
+
+        if (moreInfoRequest.VillaId == null)
+        {
+            return BadRequest(RequestResponse.Failed("Invalid villa id", new Dictionary<string, string> { { "Reason", "Villa id is required" } }));
         }
 
         Request request = new()
@@ -39,6 +50,13 @@ public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
         await _dbContext.Requests.AddAsync(request);
         await _dbContext.SaveChangesAsync();
 
-        return Ok(RequestResponse.Successfull("SUCCESS", new Dictionary<string, string> { { moreInfoRequest.Email, moreInfoRequest.Message } }));
+        return Ok(RequestResponse.Successfull("Request for more info successfull!"));
+    }
+    
+    private static bool IsValidEmail(string email)
+    {
+        string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+
+        return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
     }
 }

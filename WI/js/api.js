@@ -76,7 +76,6 @@ class LoginRequest extends Requests {
 }
 
 class MoreInfoRequest extends Requests {
-
     static get address() {
         return super.address + '/moreInfoRequest';
     }
