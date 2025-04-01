@@ -77,6 +77,12 @@
     cursor: pointer;
 }
 
+@media screen and (max-width: 1300px) {
+    .modalContent {
+        width: 50%;
+    }
+} 
+
 @media screen and (max-width: 768px) {
     .modalContent {
         margin: auto 10px;
