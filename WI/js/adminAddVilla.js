@@ -10,7 +10,7 @@ const imageInput = document.getElementById("imageInput");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 const maxImages = 20;
 const maxFileSize = 2 * 1024 * 1024; // 2MB
-const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+const allowedTypes = ["image/png", "image/jpeg", "image/webp", "image/jpg", "image/avif"];
 let selectedImages = [];
 let mainImage = null;
 
@@ -143,7 +143,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
         const response = await AdminRequest.request("POST", `${AdminRequest.address}/upload-villa`, formData, true);
         if (response.success) {
             alert("Villa added successfully!");
-            // window.location.href = "VillaList.html";
+            window.location.href = "VillaList.html";
         } else {
             alert("Error: " + response.data.Reason);
         }

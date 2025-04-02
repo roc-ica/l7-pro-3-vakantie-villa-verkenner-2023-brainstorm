@@ -1,4 +1,7 @@
-﻿namespace VillaVerkenerAPI.Models.DB;
+﻿using System;
+using System.Collections.Generic;
+
+namespace VillaVerkenerAPI.Models.DB;
 
 public partial class Request
 {

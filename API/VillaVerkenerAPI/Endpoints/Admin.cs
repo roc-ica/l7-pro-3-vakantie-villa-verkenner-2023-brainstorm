@@ -11,6 +11,102 @@ public class LoginRequest
     public string Email { get; set; }
     public string Password { get; set; }
 }
+public class UploadVillaRequest
+{
+    public string VillaName { get; set; }
+    public string Description { get; set; }
+    public int Price { get; set; }
+    public string Location { get; set; }
+    public int Capacity { get; set; }
+    public int Bedrooms { get; set; }
+    public int Bathrooms { get; set; }
+    public List<IFormFile> Images { get; set; }
+    public IFormFile MainImage { get; set; }
+    public string PropertyTagsJson { get; set; }
+    public List<int> PropertyTags { get { return DeserializeTags(PropertyTagsJson); } }
+    public string LocationTagsJson { get; set; }
+    public List<int> LocationTags { get { return DeserializeTags(LocationTagsJson); } }
+
+    // Helper method for deserializing tags from JSON
+    private List<int> DeserializeTags(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return new List<int>();
+        List<string> tags = System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+        List<int> tagIds = new List<int>();
+        foreach (string tag in tags)
+        {
+            if (int.TryParse(tag, out int tagId))
+            {
+                tagIds.Add(tagId);
+            }
+        }
+        return tagIds;
+    }
+
+    // Validation method
+    public List<string> Validate(DBContext _dbContext)
+    {
+        List<string> errors = new List<string>();
+
+        if (string.IsNullOrEmpty(VillaName) || VillaName.Length > 45)
+        {
+            errors.Add("Villa Name must be between 1 and 45 characters.");
+        }
+
+        if (string.IsNullOrEmpty(Description) || Description.Length > 128)
+        {
+            errors.Add("Description must be between 1 and 128 characters.");
+        }
+
+        if (Images == null || Images.Count == 0)
+        {
+            errors.Add("Images are required.");
+        }
+
+        if (MainImage == null)
+        {
+            errors.Add("Main Image is required.");
+        }
+
+        if (_dbContext.Villas.Any(v => v.Naam == VillaName))
+        {
+            errors.Add("Villa with this name already exists.");
+        }
+
+        // Validate PropertyTags presence
+        if (PropertyTags.Count == 0)
+        {
+            errors.Add("Property Tags are required.");
+        }
+
+        if (LocationTags.Count == 0)
+        {
+            errors.Add("Location Tags are required.");
+        }
+
+        if (Price <= 0)
+        {
+            errors.Add("Price should be greater than 0.");
+        }
+
+        if (Capacity <= 0)
+        {
+            errors.Add("Capacity should be greater than 0.");
+        }
+
+        if (Bedrooms <= 0)
+        {
+            errors.Add("Bedrooms should be greater than 0.");
+        }
+
+        if (Bathrooms <= 0)
+        {
+            errors.Add("Bathrooms should be greater than 0.");
+        }
+
+        return errors;
+    }
+}
 
 [Route("api/admin")]
 [ApiController]
@@ -84,74 +180,12 @@ public class AdminController : ControllerBase
             return Unauthorized(RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "Incorrect Password" } }));
         }
     }
-    public class UploadVillaRequest
-    {
-        public string VillaName { get; set; }
-        public string Description { get; set; }
-        public int Price { get; set; }
-        public string Location { get; set; }
-        public int Capacity { get; set; }
-        public int Bedrooms { get; set; }
-        public int Bathrooms { get; set; }
-        public List<IFormFile> Images { get; set; }
-        public IFormFile MainImage { get; set; }
-
-        public string PropertyTagsJson { get; set; }
-        public List<int> PropertyTags
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(PropertyTagsJson))
-                {
-                    return new List<int>();
-                }
-                else
-                {
-                    List<string> tags = System.Text.Json.JsonSerializer.Deserialize<List<string>>(PropertyTagsJson)?.ToList() ?? new List<string>();
-                    List<int> tagIds = new List<int>();
-                    foreach (string tag in tags)
-                    {
-                        if (int.TryParse(tag, out int tagId))
-                        {
-                            tagIds.Add(tagId);
-                        }
-                    }
-                    return tagIds;
-                }
-            }
-        }
-        public string LocationTagsJson { get; set; }
-        public List<int> LocationTags
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(LocationTagsJson))
-                {
-                    return new List<int>();
-                }
-                else
-                {
-                    List<string> tags = System.Text.Json.JsonSerializer.Deserialize<List<string>>(LocationTagsJson)?.ToList() ?? new List<string>();
-                    List<int> tagIds = new List<int>();
-                    foreach (string tag in tags)
-                    {
-                        if (int.TryParse(tag, out int tagId))
-                        {
-                            tagIds.Add(tagId);
-                        }
-                    }
-                    return tagIds;
-                }
-            }
-        }
-    }
-
+  
     private async Task<Image> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
     {
-        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName.Replace(" ","_"));
         string path = Path.Combine(location, fileName);
-
-        using (var stream = new FileStream(path, FileMode.Create))
+        using (FileStream stream = new FileStream(path, FileMode.Create))
         {
             await image.CopyToAsync(stream);
         }
@@ -167,25 +201,20 @@ public class AdminController : ControllerBase
     [HttpPost("upload-villa")]
     public async Task<ActionResult<RequestResponse>> UploadVilla([FromForm] UploadVillaRequest uploadVillaRequest)
     {
-        using var transaction = await _dbContext.Database.BeginTransactionAsync();
-        List<string> createdFiles = new List<string>(); // Track created files
+        using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
+
+        List<string> createdFiles = new List<string>();
         string folder = Path.Combine($"{Guid.NewGuid()}-{uploadVillaRequest.VillaName}");
         string location = Path.Combine(Directory.GetCurrentDirectory(), "Images", folder);
 
         try
         {
-            if (uploadVillaRequest.Images == null || uploadVillaRequest.Images.Count == 0)
-            {
-                return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", "Images are required" } }));
-            }
-            if (uploadVillaRequest.MainImage == null)
-            {
-                return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", "Main Image is required" } }));
-            }
+            List<string> validationErrors = uploadVillaRequest.Validate(_dbContext);
 
-            if (_dbContext.Villas.Any(v => v.Naam == uploadVillaRequest.VillaName))
+            if (validationErrors.Count != 0)
             {
-                return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", "Villa with this name already exists" } }));
+                string errorMessage = string.Join("\n", validationErrors);
+                return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", errorMessage } }));
             }
 
             Villa newVilla = new Villa
@@ -199,7 +228,7 @@ public class AdminController : ControllerBase
                 Badkamers = uploadVillaRequest.Bathrooms
             };
 
-            var newVillaEntity = await _dbContext.Villas.AddAsync(newVilla);
+            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Villa> newVillaEntity = await _dbContext.Villas.AddAsync(newVilla);
             await _dbContext.SaveChangesAsync();
             Console.WriteLine("Saved villa");
 
