@@ -124,6 +124,14 @@ public class VillaController : ControllerBase
             .Select(v => SmallVilla.From(v))
             .ToListAsync();
 
+        filteredVillas.ForEach(villa =>
+        {
+            var primaryImage = _dbContext.Images
+                .Where(i => i.VillaId == villa.VillaID && i.IsPrimary == 1)
+                .FirstOrDefault();
+            villa.VillaImagePath = primaryImage?.ImageLocation ?? "";
+            villa.VillaImagePath = "http://localhost:3012/Images/" + villa.VillaImagePath;
+        });
 
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(filteredVillas) } }));
     }
