@@ -75,6 +75,16 @@ class LoginRequest extends Requests {
     }
 }
 
+class PDFRequest extends Requests {
+
+    static get address() {
+        return super.address + '/pdf';
+    }
+
+    static async generatePDF() {
+        return await this.request('POST', `${this.address}/Generate`, {  });
+    }
+}
 
 // models
 
