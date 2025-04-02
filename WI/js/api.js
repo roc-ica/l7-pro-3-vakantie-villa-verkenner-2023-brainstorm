@@ -64,10 +64,10 @@ class VillaRequests extends Requests {
 }
 
 
-class LoginRequest extends Requests {
+class AdminRequest extends Requests {
 
     static get address() {
-        return super.address + '/login';
+        return super.address + '/admin';
     }
 
     static async login(email, password) {

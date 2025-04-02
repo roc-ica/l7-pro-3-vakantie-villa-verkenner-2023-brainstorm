@@ -6,25 +6,24 @@ using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
 
 namespace VillaVerkenerAPI.Endpoints;
+public class LoginRequest
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
 
-[Route("api/login")]
+[Route("api/admin")]
 [ApiController]
-public class LoginController : ControllerBase
+public class AdminController : ControllerBase
 {
     private readonly DBContext _dbContext;
 
-    public LoginController(DBContext dbContext)
+    public AdminController(DBContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public class LoginRequest
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<ActionResult<RequestResponse>> Login([FromBody] LoginRequest loginRequest)
     {
         if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
