@@ -208,6 +208,13 @@ footer .links * {
 	margin: 4px;
 }
 
+footer #admin {
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+	align-items: end;
+}
+
 @media (max-width: 768px) {
 	footer {
 		flex-direction: column;
