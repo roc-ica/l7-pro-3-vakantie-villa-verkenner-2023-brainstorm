@@ -126,7 +126,7 @@ public class VillaController : ControllerBase
 
         filteredVillas.ForEach(villa =>
         {
-            var primaryImage = _dbContext.Images
+            Image? primaryImage = _dbContext.Images
                 .Where(i => i.VillaId == villa.VillaID && i.IsPrimary == 1)
                 .FirstOrDefault();
             villa.VillaImagePath = primaryImage?.ImageLocation ?? "";
