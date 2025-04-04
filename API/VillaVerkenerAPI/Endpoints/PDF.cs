@@ -19,17 +19,30 @@ public class PDFController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpPost("Generate")]
-    public async Task<ActionResult<RequestResponse>> PDFGenerator()
+    [HttpPost("get")]
+    public async Task<ActionResult<RequestResponse>> PDFGenerator([FromBody] int id)
     {
-        Console.WriteLine("Generating PDF");
-        var pdf = new PDFGenerate();
-        pdf.Main();
-        Console.WriteLine("PDF Generated");
-        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "PDF", "PDF Generated" } }));
-    }
+        Villa? villa = await _dbContext.Villas
+            .FirstOrDefaultAsync(v => v.VillaId == id);
 
+        if (villa == null)
+        {
+            return NotFound(RequestResponse.Failed("Villa not found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
+        }
 
+        villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+        
+        try
+        {
+            PDFGenerate PDFGenerate = new PDFGenerate();
+            PDFGenerate.Main(villa);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(RequestResponse.Failed("PDF generation failed", new Dictionary<string, string> { { "Reason", ex.Message } }));
+        }
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "PDF", "PDF Generated" }, { "id", id.ToString() } }));
     }
+}
 
 

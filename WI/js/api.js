@@ -81,8 +81,8 @@ class PDFRequest extends Requests {
         return super.address + '/pdf';
     }
 
-    static async generatePDF() {
-        return await this.request('POST', `${this.address}/Generate`, {  });
+    static async generatePDF(VillaID) {
+        return await this.request('POST', `${this.address}/get`, VillaID);
     }
 }
 
