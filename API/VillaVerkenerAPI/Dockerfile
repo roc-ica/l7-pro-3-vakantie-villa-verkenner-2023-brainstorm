@@ -28,3 +28,16 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "VillaVerkenerAPI.dll"]
+
+
+# Install fontconfig and download Arial
+USER root
+RUN apk add --no-cache fontconfig ttf-dejavu && \
+    mkdir -p /usr/share/fonts/microsoft && \
+    wget -O /usr/share/fonts/microsoft/arial.ttf https://github.com/matomo-org/travis-scripts/raw/master/fonts/Arial.ttf && \
+    fc-cache -fv
+
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
