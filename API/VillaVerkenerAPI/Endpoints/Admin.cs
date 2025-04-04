@@ -57,15 +57,50 @@ public class UploadVillaRequest
         {
             errors.Add("Description must be between 1 and 128 characters.");
         }
-
+        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".avif" };
         if (Images == null || Images.Count == 0)
         {
             errors.Add("Images are required.");
         }
+        else 
+        {
+            if (Images.Count > 20)
+            {
+                errors.Add("You can upload a maximum of 20 images.");
+            }
+            else
+            {
+                foreach (IFormFile image in Images)
+                {
+                    if (image.Length > 5 * 1024 * 1024) // 5 MB limit
+                    {
+                        errors.Add("Image size should not exceed 5 MB.");
+                    }
+                    string fileExtension = Path.GetExtension(image.FileName).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        errors.Add("Invalid image format. Allowed formats: jpg, jpeg, png, avif.");
+                    }
 
+                }
+            }
+        }
         if (MainImage == null)
         {
             errors.Add("Main Image is required.");
+        }
+        else
+        {
+            if (MainImage.Length > 5 * 1024 * 1024) // 5 MB limit
+            {
+                errors.Add("Main Image size should not exceed 5 MB.");
+            }
+            
+            string fileExtension = Path.GetExtension(MainImage.FileName).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                errors.Add("Invalid main image format. Allowed formats: jpg, jpeg, png, avif.");
+            }
         }
 
         if (_dbContext.Villas.Any(v => v.Naam == VillaName))
@@ -183,7 +218,7 @@ public class AdminController : ControllerBase
   
     private async Task<Image> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
     {
-        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName.Replace(" ","_"));
+        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
         string path = Path.Combine(location, fileName);
         using (FileStream stream = new FileStream(path, FileMode.Create))
         {
@@ -204,7 +239,7 @@ public class AdminController : ControllerBase
         using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
 
         List<string> createdFiles = new List<string>();
-        string folder = Path.Combine($"{Guid.NewGuid()}-{uploadVillaRequest.VillaName}");
+        string folder = Path.Combine($"{Guid.NewGuid()}");
         string location = Path.Combine(Directory.GetCurrentDirectory(), "Images", folder);
 
         try

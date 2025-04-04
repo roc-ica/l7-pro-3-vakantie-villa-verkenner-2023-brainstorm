@@ -24,7 +24,7 @@ imageInput.addEventListener("change", function () {
     const files = Array.from(imageInput.files);
     files.forEach((file) => {
         if (!allowedTypes.includes(file.type)) {
-            alert("Only .png, .jpeg, and .webp files are allowed.");
+            alert("Only .png, .jpeg, .avif and .webp files are allowed.");
             return;
         }
 
