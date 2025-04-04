@@ -38,7 +38,6 @@ function showErrorMessage(message) {
 
 hideErrorMessage();
 
-
 async function checkLogin() {
     const IsLoggedIn = await AdminRequest.IsLoggedIn();
     if (IsLoggedIn.success === true) {

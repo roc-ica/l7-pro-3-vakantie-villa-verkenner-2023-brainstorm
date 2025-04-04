@@ -137,8 +137,6 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
         }
     });
 
-
-
     try {
         const response = await AdminRequest.request("POST", `${AdminRequest.address}/upload-villa`, formData, true);
         if (response.success) {
