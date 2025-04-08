@@ -57,7 +57,7 @@ public class UploadVillaRequest
         {
             errors.Add("Description must be between 1 and 128 characters.");
         }
-        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".avif" };
+        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".avif",".webp" };
         if (Images == null || Images.Count == 0)
         {
             errors.Add("Images are required.");
@@ -79,7 +79,7 @@ public class UploadVillaRequest
                     string fileExtension = Path.GetExtension(image.FileName).ToLower();
                     if (!allowedExtensions.Contains(fileExtension))
                     {
-                        errors.Add("Invalid image format. Allowed formats: jpg, jpeg, png, avif.");
+                        errors.Add($"Invalid image format. Allowed formats: {string.Join(",",allowedExtensions).Replace(".","")}");
                     }
 
                 }
@@ -99,7 +99,7 @@ public class UploadVillaRequest
             string fileExtension = Path.GetExtension(MainImage.FileName).ToLower();
             if (!allowedExtensions.Contains(fileExtension))
             {
-                errors.Add("Invalid main image format. Allowed formats: jpg, jpeg, png, avif.");
+                errors.Add($"Invalid image format. Allowed formats: {string.Join(",", allowedExtensions).Replace(".", "")}");
             }
         }
 
