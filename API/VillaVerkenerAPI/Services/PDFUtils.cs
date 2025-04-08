@@ -71,7 +71,7 @@ namespace VillaVerkenerAPI.Services
                 totalHeight += font.Height + 2;
             }
 
-            return new ItemSize(0, 0, maxWidth + 2, totalHeight + 2);
+            return new ItemSize(0, 0, maxWidth, totalHeight);
         }
     }
     public class PageItem

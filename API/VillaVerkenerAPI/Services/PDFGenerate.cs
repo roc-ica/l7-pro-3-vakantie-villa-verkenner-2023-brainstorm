@@ -33,9 +33,13 @@ namespace VillaVerkenerAPI.Services
             PageItem page = _pages[0];
 
             ItemSize header = AddCompanyInfo(page);
-            ItemSize imageBlock = AddMainImage(villa, header.Bottom, page);
-            ItemSize details = AddVillaDetails(villa, imageBlock, page);
-            ItemSize description = AddDescription(villa, details, page);
+            ItemSize[] mainBlocks = AddMainImage(villa, header.Bottom, page);
+            ItemSize imageBlock = mainBlocks[0];
+            ItemSize titleBlock = mainBlocks[1];
+
+            ItemSize detailStartData = new ItemSize(titleBlock.Top,titleBlock.Left,imageBlock.Width,titleBlock.Height);
+            ItemSize details = AddVillaDetails(villa, detailStartData, page);
+            ItemSize description = AddDescription(villa, imageBlock, page);
 
             string fileName = $"flyer_{villa.Naam.Trim().Replace(" ", "_")}.pdf";
             string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "Images", "PDF", fileName);
@@ -50,9 +54,9 @@ namespace VillaVerkenerAPI.Services
             string[] lines = new[]
             {
                 "Vakantie Villa Verkenner",
-                "address line 1",
-                "address line 2",
-                "info@villaverkenner",
+                "Disketteweg 2",
+                "3815 AV Amersfoort",
+                "info@villaverkenner.nl",
                 "000-1122334"
             };
 
@@ -83,7 +87,7 @@ namespace VillaVerkenerAPI.Services
             return ItemSize.Combine(new[] { textBlock, logoBlock });
         }
 
-        private ItemSize AddMainImage(Villa villa, double startY, PageItem page)
+        private ItemSize[] AddMainImage(Villa villa, double startY, PageItem page)
         {
             XFont titleFont = _layout.GetFont("Title");
             XFont bodyFont = _layout.GetFont("Body");
@@ -105,15 +109,18 @@ namespace VillaVerkenerAPI.Services
             imagePath = Path.Combine("Images", "CharmingWasillanHome", "Exterior.png");
 
             if (image == null || !File.Exists(imagePath))
-                return ItemSize.Combine(new[] { AddFailedImageBlock(imageBlock, page), combinedTop });
+            {
+                imageBlock = AddFailedImageBlock(imageBlock, page);
+                return new[] { imageBlock,combinedTop };
+            }
 
             XImage xImage = XImage.FromFile(imagePath);
             page.Graphics.DrawImage(xImage, imageBlock.ToXRect(), new XRect(0, 0, xImage.PixelWidth, xImage.PixelHeight), XGraphicsUnit.Point);
 
-            return ItemSize.Combine(new[] { imageBlock, combinedTop });
+            return new[] { imageBlock, combinedTop };
         }
 
-        private ItemSize AddVillaDetails(Villa villa, ItemSize imageBlock, PageItem page)
+        private ItemSize AddVillaDetails(Villa villa, ItemSize previousBlock, PageItem page)
         {
             XFont font = _layout.GetFont("Body");
             string[] lines = new[]
@@ -125,7 +132,8 @@ namespace VillaVerkenerAPI.Services
             };
 
             ItemSize textBlock = ItemSize.GetStringBoxSize(lines, font);
-            textBlock.MoveTo(imageBlock.Right + _layout.MarginRight, imageBlock.Top);
+            textBlock.MoveTo(previousBlock.Right + _layout.MarginRight, previousBlock.Top);
+            textBlock.MoveDown(13);
 
             XRect rect = textBlock.ToXRect();
             foreach (string? line in lines)
@@ -134,7 +142,7 @@ namespace VillaVerkenerAPI.Services
                 rect.Y += font.Height + 2;
             }
 
-            return ItemSize.Combine(new[] { imageBlock, textBlock });
+            return ItemSize.Combine(new[] { previousBlock, textBlock });
         }
         
         private ItemSize AddDescription(Villa villa, ItemSize previousBlock, PageItem page)
@@ -160,7 +168,7 @@ namespace VillaVerkenerAPI.Services
             Console.WriteLine("Rendering failed image block...");
 
             double x = _layout.MarginLeft;
-            double y = placeholder.Top + _layout.MarginLeft;
+            double y = placeholder.Top;
 
             page.Graphics.DrawRectangle(XBrushes.Red, new XRect(x, y, placeholder.Width, placeholder.Height));
             page.Graphics.DrawLine(XPens.White, x, y, x + placeholder.Width, y + placeholder.Height);
