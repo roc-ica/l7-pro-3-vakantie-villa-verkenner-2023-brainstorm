@@ -4,7 +4,6 @@ using System;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
-using VillaVerkenerAPI.PDF;
 
 namespace VillaVerkenerAPI.Endpoints;
 
