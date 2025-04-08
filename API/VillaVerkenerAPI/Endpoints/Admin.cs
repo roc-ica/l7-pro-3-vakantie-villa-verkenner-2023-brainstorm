@@ -218,18 +218,11 @@ public class AdminController : ControllerBase
   
     private async Task<Image> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
     {
-        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-        string path = Path.Combine(location, fileName);
-        using (FileStream stream = new FileStream(path, FileMode.Create))
-        {
-            await image.CopyToAsync(stream);
-        }
-
-        createdFiles.Add(path);
+        string path = await ImageUploader.UploadImage(image,location, folder, createdFiles);
 
         return new Image
         {
-            ImageLocation = Path.Combine(folder, fileName),
+            ImageLocation = path
         };
     }
 
