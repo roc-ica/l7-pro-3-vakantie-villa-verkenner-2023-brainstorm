@@ -53,9 +53,9 @@ public class UploadVillaRequest
             errors.Add("Villa Name must be between 1 and 45 characters.");
         }
 
-        if (string.IsNullOrEmpty(Description) || Description.Length > 128)
+        if (string.IsNullOrEmpty(Description))
         {
-            errors.Add("Description must be between 1 and 128 characters.");
+            errors.Add("Description must be more than 1 character.");
         }
         string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".avif",".webp" };
         if (Images == null || Images.Count == 0)
