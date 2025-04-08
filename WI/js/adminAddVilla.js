@@ -138,7 +138,9 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
     });
 
     try {
+        document.getElementById('addVillaButton').disabled = true;
         const response = await AdminRequest.request("POST", `${AdminRequest.address}/upload-villa`, formData, true);
+        document.getElementById('addVillaButton').disabled = false;
         if (response.success) {
             alert("Villa added successfully!");
             window.location.href = "VillaList.html";
