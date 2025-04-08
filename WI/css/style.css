@@ -8,6 +8,7 @@
 	--accent-secondary: #FFF0D4;
 	--nav-select: #0000001A;
 	--text-color-error: #D8000C;
+	--green: #228B22;
 	--background-color-error: #FFDDDD;
 }
 
@@ -206,6 +207,13 @@ footer .links * {
 	background-color: var(--primary-color);
 	padding: 0px;
 	margin: 4px;
+}
+
+footer #admin {
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+	align-items: end;
 }
 
 @media (max-width: 768px) {

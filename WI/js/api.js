@@ -4,30 +4,38 @@ class Requests {
     }
 
     // internal function to send a request
-    static async Sendrequest(method, endpoint, body) {
+    static async Sendrequest(method, endpoint, body, requiresAuth) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open(method, endpoint);
-            xhr.setRequestHeader('Content-Type', 'application/json');
 
-            xhr.onload = () => {
-                resolve(JSON.parse(xhr.responseText));
-            };
+            // Remove the Content-Type header for FormData
+            if (!(body instanceof FormData)) {
+                xhr.setRequestHeader("Content-Type", "application/json");
+            }
 
+            if (requiresAuth) {
+                const sessionKey = sessionStorage.getItem("SessionKey");
+                if (sessionKey) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${sessionKey}`);
+                } else {
+                    reject("No session key found. Please log in.");
+                    return;
+                }
+            }
+
+            xhr.onload = () => resolve(JSON.parse(xhr.responseText));
             xhr.onerror = () => reject(xhr.statusText);
-            if (body) {
-                xhr.send(JSON.stringify(body));
-            }
-            else {
-                xhr.send()
-            }
+
+            xhr.send(body instanceof FormData ? body : JSON.stringify(body));
         });
     }
 
+
     // public function to send a request handling errors
-    static async request(method, endpoint, body) {
+    static async request(method, endpoint, body, requiresAuth = false) {
         try {
-            return await this.Sendrequest(method, endpoint, body);
+            return await this.Sendrequest(method, endpoint, body, requiresAuth);
         }
         catch (error) {
             console.error(error);
@@ -64,14 +72,22 @@ class VillaRequests extends Requests {
 }
 
 
-class LoginRequest extends Requests {
+class AdminRequest extends Requests {
 
     static get address() {
-        return super.address + '/login';
+        return super.address + '/admin';
     }
 
     static async login(email, password) {
         return await this.request('POST', `${this.address}/login`, { email, password });
+    }
+
+    static async IsLoggedIn() {
+        return await this.request('GET', `${this.address}/is-allowed`, {}, true);
+    }
+
+    static async addVilla(data) {
+        return await this.request('POST', `${this.address}/upload-villa`, data, true);
     }
 }
 
