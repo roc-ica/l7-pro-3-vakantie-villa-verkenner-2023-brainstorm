@@ -4,20 +4,6 @@ using System.Text;
 
 namespace VillaVerkenerAPI.Services
 {
-    public struct Position
-    {
-        public double X;
-        public double Y;
-        public double Right => X + 1;
-        public double Bottom => Y + 1;
-
-        public Position(double x, double y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
     public struct ItemSize
     {
         public double Top;
@@ -49,7 +35,7 @@ namespace VillaVerkenerAPI.Services
             double top = double.MaxValue, left = double.MaxValue;
             double right = 0, bottom = 0;
 
-            foreach (var item in items)
+            foreach (ItemSize item in items)
             {
                 top = Math.Min(top, item.Top);
                 left = Math.Min(left, item.Left);
@@ -64,7 +50,7 @@ namespace VillaVerkenerAPI.Services
             double maxWidth = 0;
             double totalHeight = 0;
 
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
                 double lineWidth = line.Length * 5; // Approximate
                 maxWidth = Math.Max(maxWidth, lineWidth);
@@ -91,11 +77,11 @@ namespace VillaVerkenerAPI.Services
     {
         public static string[] LimitLineLength(string text, int maxLength)
         {
-            var lines = new List<string>();
-            var builder = new StringBuilder();
-            var words = text.Split(' ');
+            List<string> lines = new List<string>();
+            StringBuilder builder = new StringBuilder();
+            string[] words = text.Split(' ');
 
-            foreach (var word in words)
+            foreach (string word in words)
             {
                 if (builder.Length + word.Length > maxLength)
                 {
@@ -146,7 +132,7 @@ namespace VillaVerkenerAPI.Services
 
         public XFont GetFont(string fontName)
         {
-            if (Fonts.TryGetValue(fontName, out var font))
+            if (Fonts.TryGetValue(fontName, out XFont? font))
                 return font;
 
             Console.WriteLine("Font not found, using default.");
