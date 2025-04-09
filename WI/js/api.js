@@ -101,6 +101,28 @@ class MoreInfoRequest extends Requests {
     }
 }
 
+class PDFRequests extends Requests {
+    static get address() {
+        return super.address + '/pdf';
+    }
+
+    static async generatePDF(VillaID) {
+        return await this.request('POST', `${this.address}/get`, VillaID);
+    }
+}
+
+
+class ImageServer {
+    static get address() {
+        return 'http://localhost:3012/Images';
+    }
+
+    static get Logo() {
+        return `${this.address}/General/Logo.png`;
+    }
+}
+
+
 // models
 
 class SmallVilla {
@@ -141,4 +163,10 @@ ${this.capacity} personen</p>
         </div>
         `;
     }
+}
+
+
+let logos = document.getElementsByClassName('logo');
+for (let i = 0; i < logos.length; i++) {
+    logos[i].src = ImageServer.Logo;
 }

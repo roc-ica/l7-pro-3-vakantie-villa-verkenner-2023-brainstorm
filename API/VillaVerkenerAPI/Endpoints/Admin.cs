@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -294,7 +295,16 @@ public class AdminController : ControllerBase
 
             await transaction.CommitAsync();
 
-            return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() } }));
+            PDFGenerate pdfGenerate = new PDFGenerate();
+            string pdfPath = Path.Combine(location, $"flyer_{newVillaEntity.Entity.Naam.Trim().Replace(" ", "_")}.pdf");
+            RequestResponse pdfResult = pdfGenerate.Main(newVillaEntity.Entity, pdfPath, shouldRegenerate: false);
+
+            if (pdfResult.Success == false)
+            {
+                return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "false" }, { "PDFPath","" } }));
+            }
+
+            return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "true" }, { "PDFPath", pdfPath  } }));
         }
         catch (Exception e)
         {

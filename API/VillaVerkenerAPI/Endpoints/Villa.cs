@@ -129,8 +129,7 @@ public class VillaController : ControllerBase
             Image? primaryImage = _dbContext.Images
                 .Where(i => i.VillaId == villa.VillaID && i.IsPrimary == 1)
                 .FirstOrDefault();
-            villa.VillaImagePath = primaryImage?.ImageLocation ?? "";
-            villa.VillaImagePath = "http://localhost:3012/Images/" + villa.VillaImagePath;
+            villa.VillaImagePath = APIUrlHandler.GetImageUrl(primaryImage?.ImageLocation ?? "");
         });
 
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(filteredVillas) } }));

@@ -24,9 +24,33 @@ async function getVilla(id) {
     });
 }
 
+let path = ""
+
+function downloadPDF() {
+    if (downloadButton.classList.contains("disabled")) {
+        return;
+    }
+    window.open(path, "_blank");
+}
+
+
+async function setPdfPath(id) {
+    let pdfPath = await PDFRequests.generatePDF(id);
+    console.log(pdfPath);
+    if (pdfPath.success == false) {
+        console.error("Failed to get pdf path");
+        return;
+    }
+    console.log(pdfPath.data);
+    path = pdfPath.data.PDF;
+    downloadButton.classList.remove("disabled");
+}
+const downloadButton = document.getElementById("flyerButton");
+downloadButton.classList.add("disabled");
 
 // get id from url
 let url = new URL(window.location.href);
 let id = url.searchParams.get("villaID");
 // convert id to number
 getVilla(Number(id));
+setPdfPath(Number(id));
