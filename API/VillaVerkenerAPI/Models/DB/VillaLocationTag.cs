@@ -5,6 +5,8 @@ namespace VillaVerkenerAPI.Models.DB;
 
 public partial class VillaLocationTag
 {
+    public int Id { get; set; }
+
     public int VillaId { get; set; }
 
     public int LocationTagId { get; set; }

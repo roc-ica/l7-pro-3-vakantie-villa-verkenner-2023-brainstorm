@@ -32,6 +32,7 @@ public partial class DBContext : DbContext
     public virtual DbSet<VillaLocationTag> VillaLocationTags { get; set; }
 
     public virtual DbSet<VillaPropertyTag> VillaPropertyTags { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Image>(entity =>
@@ -94,6 +95,7 @@ public partial class DBContext : DbContext
                 .HasColumnName("deleted_at");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+            entity.Property(e => e.Message).HasMaxLength(255);
             entity.Property(e => e.VillaId).HasColumnName("VillaID");
 
             entity.HasOne(d => d.Villa).WithMany(p => p.Requests)
@@ -160,21 +162,24 @@ public partial class DBContext : DbContext
 
         modelBuilder.Entity<VillaLocationTag>(entity =>
         {
-            entity.HasNoKey();
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.Id, "ID_UNIQUE").IsUnique();
 
             entity.HasIndex(e => e.LocationTagId, "VillaLocationTags_LocationTagID_LocationTags_idx");
 
             entity.HasIndex(e => e.VillaId, "VillaLocationTags_VillaID_Villa_idx");
 
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.LocationTagId).HasColumnName("LocationTagID");
             entity.Property(e => e.VillaId).HasColumnName("VillaID");
 
-            entity.HasOne(d => d.LocationTag).WithMany()
+            entity.HasOne(d => d.LocationTag).WithMany(p => p.VillaLocationTags)
                 .HasForeignKey(d => d.LocationTagId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("VillaLocationTags_LocationTagID_LocationTags");
 
-            entity.HasOne(d => d.Villa).WithMany()
+            entity.HasOne(d => d.Villa).WithMany(p => p.VillaLocationTags)
                 .HasForeignKey(d => d.VillaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("VillaLocationTags_VillaID_Villa");
@@ -182,21 +187,24 @@ public partial class DBContext : DbContext
 
         modelBuilder.Entity<VillaPropertyTag>(entity =>
         {
-            entity.HasNoKey();
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.Id, "ID_UNIQUE").IsUnique();
 
             entity.HasIndex(e => e.VillaId, "VillaLocationTags_VillaID_Villa_idx");
 
             entity.HasIndex(e => e.PropertyTagId, "VillaPropertyTags_PropertyTagID_PropertyTags_idx");
 
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.PropertyTagId).HasColumnName("PropertyTagID");
             entity.Property(e => e.VillaId).HasColumnName("VillaID");
 
-            entity.HasOne(d => d.PropertyTag).WithMany()
+            entity.HasOne(d => d.PropertyTag).WithMany(p => p.VillaPropertyTags)
                 .HasForeignKey(d => d.PropertyTagId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("VillaPropertyTags_PropertyTagID_PropertyTags");
 
-            entity.HasOne(d => d.Villa).WithMany()
+            entity.HasOne(d => d.Villa).WithMany(p => p.VillaPropertyTags)
                 .HasForeignKey(d => d.VillaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("VillaPropertyTags_VillaID_Villa");

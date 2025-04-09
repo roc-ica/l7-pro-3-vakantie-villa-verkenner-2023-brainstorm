@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vakantie Villa Verkenner</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/adminAddVilla.css">
+</head>
+
+<body>
+    <nav class="desktop">
+        <img src="../Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+        <a href=" index.html" class="active">
+            <h3>Home</h3>
+        </a>
+        <a href="../overons.html">
+            <h3>Over ons</h3>
+        </a>
+        <a href="../villas.html">
+            <h3>
+                Villa's
+            </h3>
+        </a>
+    </nav>
+    <nav class="mobile">
+        <div class="top">
+            <img src="../Assets/LogoSmall.png" alt="Logo Icon" class="logo">
+            <button id="mobileDropDownButton" class="dropbtn" onclick="toggleDropdown()">
+                <img id="mobileDropwDownButtonIcon" src="../Assets/icons/menuIcon.svg" alt="Menu Icon">
+            </button>
+        </div>
+        <div class="dropdown">
+            <div id="mobileDropDown" class="dropdown-content">
+                <a href="../index.html" class="active">
+                    <h3>Home</h3>
+                </a>
+                <a href="../overons.html">
+                    <h3>Over ons</h3>
+                </a>
+                <a href="../index.html">
+                    <h3>Villa's</h3>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="container">
+            <div class="fields">
+                <div class="top">
+                    <h1>Voeg een villa toe</h1>
+                    <img src="../Assets/icons/closeModal.svg" alt="Close Icon" class="closeIcon"
+                        onclick="window.location.href='VillaList.html'">
+                </div>
+                <div class="form">
+                    <form>
+                        <input type="text" id="name" name="name" placeholder="Naam" required>
+                        <input type="number" id="price" name="price" placeholder="Prijs" required>
+                        <input type="text" id="location" name="location" placeholder="Locatie" required>
+                        <input type="number" id="capacity" name="capacity" placeholder="Capaciteit" required>
+                        <input type="number" id="bedrooms" name="bedrooms" placeholder="Aantal slaapkamers" required>
+                        <input type="number" id="bathrooms" name="bathrooms" placeholder="Aantal badkamers" required>
+                        <textarea id="description" name="description" placeholder="Beschrijving" required></textarea>
+                    </form>
+                </div>
+                <h2>Locatie Opties</h2>
+                <div class="filter" id="locationTagsContainer">
+                    <label for="locationTags">Locatie Opties</label>
+                </div>
+                <h2>Villa Opties</h2>
+                <div class="filter" id="propertyTagsContainer">
+                    <label for="propertyTags">Villa Opties</label>
+                </div>
+                <div class="images">
+                    <h2>Afbeeldingen</h2>
+                    <div class="imageUploadContainer">
+                        <label for="imageInput" class="imageUploadLabel">Afbeeldingen uploaden</label>
+                        <input type="file" id="imageInput" accept="image/*" multiple>
+                        <div id="imagePreviewContainer"></div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button id="cancelButton" class="cancelButton">Annuleer</button>
+                    <button id="addVillaButton" class="addButton">Voeg villa toe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <img src="../Assets/LogoBig.png" alt="Logo" class="logo">
+        <div class="links">
+            <a href="../index.html" class="active">
+                <h3>Home</h3>
+            </a>
+            <a href="../index.html">
+                <h3>Over ons</h3>
+            </a>
+            <a href="../index.html">
+                <h3>Villa's</h3>
+            </a>
+        </div>
+        <div class="contact">
+            <h3>Contact</h3>
+            <p>Telefoon: 06-12345678</p>
+            <p>Email: email@adress.com</p>
+        </div>
+    </footer>
+</body>
+<script src="../js/script.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/adminAddVilla.js"></script>
+
+</html>

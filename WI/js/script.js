@@ -1,5 +1,7 @@
 const MobileDropDown = document.getElementById("mobileDropDown");
 const MobileDropDownButton = document.getElementById("mobileDropDownButton");
+const adminButton = document.getElementById("adminIcon");
+
 
 function toggleDropdown() {
     MobileDropDown.classList.toggle("show");
@@ -13,3 +15,7 @@ document.onclick = function (event) {
         MobileDropDownButton.classList.remove("show");
     }
 }
+
+adminButton.addEventListener("click", function () {
+    window.location.href = "Admin/AdminLogin.html";
+});

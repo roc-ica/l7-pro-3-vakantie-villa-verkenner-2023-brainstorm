@@ -7,6 +7,7 @@
     <title>Vakantie Villa Verkenner</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/villa.css">
+    <link rel="stylesheet" href="css/popup.css">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
         <a href=" index.html" class="active">
             <h3>Home</h3>
         </a>
-        <a href="index.html">
+        <a href="overons.html">
             <h3>Over ons</h3>
         </a>
         <a href="villas.html">
@@ -36,10 +37,10 @@
                 <a href="index.html" class="active">
                     <h3>Home</h3>
                 </a>
-                <a href="index.html">
+                <a href="overons.html">
                     <h3>Over ons</h3>
                 </a>
-                <a href="index.html">
+                <a href="villas.html">
                     <h3>Villa's</h3>
                 </a>
             </div>
@@ -75,8 +76,30 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <button id="flyerButton" onclick="downloadFlyer()">Download Flyer</button>
-                        <button id="contactButton" onclick="contact()">Verzoek details</button>
+                        <button type="button" id="flyerButton" onclick="downloadFlyer()">Download Flyer</button>
+                        <button type="button" id="moreInfoRequestButton" onclick="openMoreInfoRequestModal()">Verzoek
+                            details</button>
+
+                        <div id="requestInfoModal">
+                            <div class="modalContent">
+                                <div class="modalHeader">
+                                    <img src="Assets/icons/closeModal.svg" id="closeModalButton" alt="Sluit modal icoon"
+                                        onclick="closeModal()" />
+                                </div>
+                                <div class="modalForm">
+                                    <p class="modalText">Waar kunnen we contact opnemen?</p>
+
+                                    <input type="text" id="email" placeholder="Email" onblur="emailValidation()" />
+                                    <textarea type="text" id="message" placeholder="Bericht"
+                                        onblur="messageValidation()"></textarea>
+
+                                    <p id="errorMessage"></p>
+                                    <button type="submit" title="Verzoek details" id="confirmRequestButton"
+                                        onclick="confirmRequest()">Verzend
+                                        verzoek</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,6 +107,7 @@
             </div>
         </div>
     </div>
+
     <footer>
         <img src="Assets/LogoBig.png" alt="Logo" class="logo">
         <div class="links">
@@ -102,10 +126,14 @@
             <p>Telefoon: 06-12345678</p>
             <p>Email: email@adress.com</p>
         </div>
+        <div id="admin">
+            <img src="Assets/icons/adminIcon.svg" alt="Admin Icon" id="adminIcon">
+        </div>
     </footer>
 </body>
 <script src="js/script.js"></script>
 <script src="js/api.js"></script>
 <script src="js/villaView.js"></script>
+<script src="js/villaActions.js"></script>
 
 </html>
