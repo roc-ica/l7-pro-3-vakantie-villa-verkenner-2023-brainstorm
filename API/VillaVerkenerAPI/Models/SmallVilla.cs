@@ -1,4 +1,5 @@
 ﻿using VillaVerkenerAPI.Models.DB;
+using VillaVerkenerAPI.Services;
 using static System.Net.WebRequestMethods;
 
 namespace VillaVerkenerAPI.Models
@@ -23,7 +24,7 @@ namespace VillaVerkenerAPI.Models
             Capacity = capacity;
             Bedrooms = bedrooms;
             Bathrooms = bathrooms;
-            VillaImagePath = "http://localhost:3012/Images/" + villaImagePath;
+            VillaImagePath = APIUrlHandler.GetImageUrl(villaImagePath);
         }
         public SmallVilla(Villa villa)
         {
@@ -35,7 +36,7 @@ namespace VillaVerkenerAPI.Models
             Bedrooms = villa.Slaapkamers;
             Bathrooms = villa.Badkamers;
             VillaImagePath = villa.Images.Count > 0 ? villa.Images.Where(image => image.IsPrimary == 1).First().ImageLocation : "";
-            VillaImagePath = "http://localhost:3012/Images/" + VillaImagePath;
+            VillaImagePath = APIUrlHandler.GetImageUrl(VillaImagePath);
         }
 
         public static SmallVilla From(Villa villa)

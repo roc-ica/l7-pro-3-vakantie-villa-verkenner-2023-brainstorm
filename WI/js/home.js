@@ -30,7 +30,3 @@ async function getVillas() {
 }
 
 getVillas();
-
-PDFRequest.generatePDF(34).then((pdf) => {
-    console.log(pdf);
-});

@@ -4,6 +4,7 @@ using System;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
+using static System.Net.WebRequestMethods;
 
 namespace VillaVerkenerAPI.Endpoints;
 
@@ -29,18 +30,31 @@ public class PDFController : ControllerBase
             return NotFound(RequestResponse.Failed("Villa not found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
         }
 
+        string fileName = $"flyer_{villa.Naam.Trim().Replace(" ", "_")}.pdf";
+        string outputPath = Path.Combine(Directory.GetCurrentDirectory(), "Images", "PDF", fileName);
+        if (System.IO.File.Exists(outputPath))
+        {
+            return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "PDF", APIUrlHandler.GetPDFUrl(fileName) } }));
+        }
+
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
         
         try
         {
-            PDFGenerate PDFGenerate = new PDFGenerate();
-            PDFGenerate.Main(villa);
+            PDFGenerate PDFGenerate = new();
+            RequestResponse result = PDFGenerate.Main(villa, outputPath, shouldRegenerate:false);
+
+            if (result.Success == false)
+            {
+                return BadRequest(RequestResponse.Failed("PDF generation failed", new Dictionary<string, string> { { "Reason", result.Message } }));
+            }
+            return Ok(RequestResponse.Successfull("PDF generated successfully", new Dictionary<string, string> { { "PDF", APIUrlHandler.GetPDFUrl(fileName) },{ "innerMessage", result.Message } }));
+
         }
         catch (Exception ex)
         {
             return BadRequest(RequestResponse.Failed("PDF generation failed", new Dictionary<string, string> { { "Reason", ex.Message } }));
         }
-        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "PDF", "PDF Generated" }, { "id", id.ToString() } }));
     }
 }
 
