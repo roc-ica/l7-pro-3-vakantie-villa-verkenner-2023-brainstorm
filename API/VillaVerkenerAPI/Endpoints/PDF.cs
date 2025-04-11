@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
-using static System.Net.WebRequestMethods;
 
 namespace VillaVerkenerAPI.Endpoints;
 
@@ -38,17 +35,17 @@ public class PDFController : ControllerBase
         }
 
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
-        
+
         try
         {
             PDFGenerate PDFGenerate = new();
-            RequestResponse result = PDFGenerate.Main(villa, outputPath, shouldRegenerate:false);
+            RequestResponse result = PDFGenerate.Main(villa, outputPath, shouldRegenerate: false);
 
             if (result.Success == false)
             {
                 return BadRequest(RequestResponse.Failed("PDF generation failed", new Dictionary<string, string> { { "Reason", result.Message } }));
             }
-            return Ok(RequestResponse.Successfull("PDF generated successfully", new Dictionary<string, string> { { "PDF", APIUrlHandler.GetPDFUrl(fileName) },{ "innerMessage", result.Message } }));
+            return Ok(RequestResponse.Successfull("PDF generated successfully", new Dictionary<string, string> { { "PDF", APIUrlHandler.GetPDFUrl(fileName) }, { "innerMessage", result.Message } }));
 
         }
         catch (Exception ex)

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
@@ -71,6 +71,27 @@ public class VillaController : ControllerBase
         }
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
         DetailedVilla smallVilla = DetailedVilla.From(villa);
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
+    }
+
+    [HttpPost("get-by-id-edit")]
+    public async Task<ActionResult<RequestResponse>> GetVillaByIdEdit([FromBody] int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Id is required" } }));
+        }
+        Villa? villa = await _dbContext.Villas
+            .Where(v => v.VillaId == id)
+            .FirstOrDefaultAsync();
+        if (villa == null)
+        {
+            return NotFound(RequestResponse.Failed("No villa found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
+        }
+        villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+        villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
+        villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
+        EditVilla smallVilla = EditVilla.From(villa, _dbContext);
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
     }
 

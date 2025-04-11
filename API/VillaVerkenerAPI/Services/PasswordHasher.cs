@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace VillaVerkenerAPI.Services;
 
@@ -65,7 +65,8 @@ public class PasswordHasher
         {
             salt = Convert.FromBase64String(parts[4]);
             storedHash = Convert.FromBase64String(parts[5]);
-        } catch(FormatException)
+        }
+        catch (FormatException)
         {
             throw new FormatException("Invalid Salt or Hash");
         }
