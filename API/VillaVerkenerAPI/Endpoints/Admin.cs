@@ -332,6 +332,31 @@ public class AdminController : ControllerBase
                 await _dbContext.SaveChangesAsync();
             }
 
+
+            List<VillaPropertyTag> existingPropertyTags = await _dbContext.VillaPropertyTags
+                .Where(vpt => vpt.VillaId == villa.VillaId)
+                .ToListAsync();
+            _dbContext.VillaPropertyTags.RemoveRange(existingPropertyTags);
+            await _dbContext.SaveChangesAsync();
+
+            List<VillaPropertyTag> propertyTags = uploadVillaRequest.PropertyTags
+                .Select(tagId => new VillaPropertyTag { VillaId = villa.VillaId, PropertyTagId = tagId })
+                .ToList();
+            await _dbContext.VillaPropertyTags.AddRangeAsync(propertyTags);
+            await _dbContext.SaveChangesAsync();
+
+            List<VillaLocationTag> existingLocationTags = await _dbContext.VillaLocationTags
+                .Where(vlt => vlt.VillaId == villa.VillaId)
+                .ToListAsync();
+            _dbContext.VillaLocationTags.RemoveRange(existingLocationTags);
+            await _dbContext.SaveChangesAsync();
+
+            List<VillaLocationTag> locationTags = uploadVillaRequest.LocationTags
+                .Select(tagId => new VillaLocationTag { VillaId = villa.VillaId, LocationTagId = tagId })
+                .ToList();
+            await _dbContext.VillaLocationTags.AddRangeAsync(locationTags);
+            await _dbContext.SaveChangesAsync();
+
             transaction.Commit();
             return RequestResponse.Successfull("Success", new() { { "data", System.Text.Json.JsonSerializer.Serialize(uploadVillaRequest) } });
 
