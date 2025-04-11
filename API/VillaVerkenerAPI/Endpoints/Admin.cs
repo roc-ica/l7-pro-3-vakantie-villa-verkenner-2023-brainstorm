@@ -220,27 +220,28 @@ public class AdminController : ControllerBase
     public async Task<ActionResult<RequestResponse>> EditVilla([FromForm] UploadEditVillaRequest uploadVillaRequest)
     {
         Console.WriteLine("---------EDIT----------------");
-        using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
 
-        List<string> createdFiles = new List<string>();
-        string GlobalFolder = "";
-        string GlobalLocation = Path.Combine(Directory.GetCurrentDirectory(), "Images", GlobalFolder);
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        var createdFiles = new List<string>();
+        var imageBasePath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+        string globalImageFolder = "";
+        string fullImagePath = "";
+
         try
         {
-
-            Villa? villa = await _dbContext.Villas.FirstOrDefaultAsync(v => v.VillaId == uploadVillaRequest.VillaId);
-
+            // Validate input
+            var villa = await _dbContext.Villas.FirstOrDefaultAsync(v => v.VillaId == uploadVillaRequest.VillaId);
             if (villa == null)
-            {
                 return NotFound(RequestResponse.Failed("Villa not found", new() { { "Reason", "Invalid VillaId" } }));
-            }
 
-            List<string> validationErrors = uploadVillaRequest.Validate(_dbContext);
-            if (validationErrors.Count != 0)
+            var validationErrors = uploadVillaRequest.Validate(_dbContext);
+            if (validationErrors.Any())
             {
-                string errorMessage = string.Join("\n", validationErrors);
+                var errorMessage = string.Join("\n", validationErrors);
                 return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", errorMessage } }));
             }
+
+            // Update villa properties
             villa.Naam = uploadVillaRequest.VillaName;
             villa.Omschrijving = uploadVillaRequest.Description;
             villa.Prijs = uploadVillaRequest.Price;
@@ -253,130 +254,127 @@ public class AdminController : ControllerBase
             await _dbContext.SaveChangesAsync();
             Console.WriteLine("--------------UPDATED VILLA -----------------");
 
-            List<Image> existingImages = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
-            string? folder = Path.GetDirectoryName(existingImages.FirstOrDefault(i => i.IsPrimary == 1)?.ImageLocation);
-            if (folder == null)
-            {
-                foreach (Image image in existingImages)
-                {
-                    if (image.IsPrimary == 0)
-                    {
-                        folder = Path.GetDirectoryName(image.ImageLocation);
-                        break;
-                    }
-                }
-            }
-            folder ??= Path.Combine(Directory.GetCurrentDirectory(), "Images", $"{Guid.NewGuid()}");
-            GlobalFolder = folder;
-            GlobalLocation = Path.Combine(Directory.GetCurrentDirectory(), "Images", GlobalFolder);
+            // Determine image folder
+            var existingImages = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+            var folder = Path.GetDirectoryName(existingImages.FirstOrDefault(i => i.IsPrimary == 1)?.ImageLocation)
+                        ?? Path.GetDirectoryName(existingImages.FirstOrDefault(i => i.IsPrimary == 0)?.ImageLocation)
+                        ?? Path.Combine(imageBasePath, Guid.NewGuid().ToString());
+
+            globalImageFolder = folder;
+            fullImagePath = Path.Combine(imageBasePath, globalImageFolder);
             Directory.CreateDirectory(folder);
 
-            List<string> deletedImages = uploadVillaRequest.RemovedImagesJson != null ? JsonSerializer.Deserialize<List<string>>(uploadVillaRequest.RemovedImagesJson) ?? new List<string>() : new List<string>();
-            foreach (string imageUrl in deletedImages)
+            // Handle deleted images
+            var deletedImages = uploadVillaRequest.RemovedImagesJson != null
+                ? JsonSerializer.Deserialize<List<string>>(uploadVillaRequest.RemovedImagesJson) ?? new List<string>()
+                : new List<string>();
+
+            foreach (var imageUrl in deletedImages)
             {
-                string[] pathParts = imageUrl.Split(Path.DirectorySeparatorChar);
-                string location = Path.Combine(pathParts[^2], pathParts[^1]);
-                await DeleteImage(location);
+                var pathParts = imageUrl.Split(Path.DirectorySeparatorChar);
+                var relativePath = Path.Combine(pathParts[^2], pathParts[^1]);
+                await DeleteImage(relativePath);
             }
             Console.WriteLine("--------------DELETED IMAGES--------------------");
-            foreach (IFormFile image in uploadVillaRequest.Images)
+
+            // Upload new images
+            foreach (var image in uploadVillaRequest.Images)
             {
-                Image uploadedImage = await UploadImage(image, GlobalLocation, folder, createdFiles);
-                uploadedImage.VillaId = villa.VillaId;
-                _dbContext.Images.Add(uploadedImage);
+                var uploaded = await UploadImage(image, fullImagePath, folder, createdFiles);
+                uploaded.VillaId = villa.VillaId;
+                _dbContext.Images.Add(uploaded);
             }
 
+            // Handle main image
+            var currentMain = await _dbContext.Images
+                .Where(i => i.VillaId == villa.VillaId && i.IsPrimary == 1)
+                .FirstOrDefaultAsync();
 
-            // Upload main image
-            Image? currentMainImage = _dbContext.Images
-                    .Where(i => i.VillaId == villa.VillaId && i.IsPrimary == 1)
-                    .FirstOrDefault();
-            if (currentMainImage != null)
+            if (currentMain != null)
             {
-                currentMainImage.IsPrimary = 0;
-                _dbContext.Images.Update(currentMainImage);
+                currentMain.IsPrimary = 0;
+                _dbContext.Images.Update(currentMain);
                 await _dbContext.SaveChangesAsync();
             }
 
             if (uploadVillaRequest.MainImage != null)
             {
-                Image uploadedPrimaryImage = await UploadImage(uploadVillaRequest.MainImage, GlobalLocation, folder, createdFiles);
-                uploadedPrimaryImage.VillaId = villa.VillaId;
-                uploadedPrimaryImage.IsPrimary = 1;
-                _dbContext.Images.Add(uploadedPrimaryImage);
+                var primary = await UploadImage(uploadVillaRequest.MainImage, fullImagePath, folder, createdFiles);
+                primary.VillaId = villa.VillaId;
+                primary.IsPrimary = 1;
+                _dbContext.Images.Add(primary);
                 await _dbContext.SaveChangesAsync();
             }
             else if (uploadVillaRequest.MainImageUrl != null)
             {
-                Image? existingImage = await _dbContext.Images
-                    .Where(i => i.ImageLocation.Equals(uploadVillaRequest.GetLocation()))
-                    .FirstOrDefaultAsync();
-                if (existingImage != null)
+                var existing = await _dbContext.Images
+                    .FirstOrDefaultAsync(i => i.ImageLocation == uploadVillaRequest.GetLocation());
+
+                if (existing != null)
                 {
-                    existingImage.IsPrimary = 1;
-                    _dbContext.Images.Update(existingImage);
+                    existing.IsPrimary = 1;
+                    _dbContext.Images.Update(existing);
                     await _dbContext.SaveChangesAsync();
                 }
             }
-            await _dbContext.SaveChangesAsync();
-            Console.WriteLine("------------ADDED NEW IMAGES---------------");
 
-            Image? newMainImage = await _dbContext.Images
-                .Where(i => i.VillaId == villa.VillaId && i.IsPrimary == 1)
-                .FirstOrDefaultAsync();
-            if (newMainImage is null)
+            // Fallback if no main image set
+            var newMain = await _dbContext.Images
+                .FirstOrDefaultAsync(i => i.VillaId == villa.VillaId && i.IsPrimary == 1);
+
+            if (newMain is null && currentMain is not null)
             {
                 Console.WriteLine("setting old primary image back");
-                currentMainImage.IsPrimary = 1;
-                _dbContext.Images.Update(currentMainImage);
+                currentMain.IsPrimary = 1;
+                _dbContext.Images.Update(currentMain);
                 await _dbContext.SaveChangesAsync();
             }
 
+            Console.WriteLine("------------ADDED NEW IMAGES---------------");
 
-            List<VillaPropertyTag> existingPropertyTags = await _dbContext.VillaPropertyTags
+            // Sync property tags
+            var oldPropertyTags = await _dbContext.VillaPropertyTags
                 .Where(vpt => vpt.VillaId == villa.VillaId)
                 .ToListAsync();
-            _dbContext.VillaPropertyTags.RemoveRange(existingPropertyTags);
+            _dbContext.VillaPropertyTags.RemoveRange(oldPropertyTags);
             await _dbContext.SaveChangesAsync();
 
-            List<VillaPropertyTag> propertyTags = uploadVillaRequest.PropertyTags
-                .Select(tagId => new VillaPropertyTag { VillaId = villa.VillaId, PropertyTagId = tagId })
+            var newPropertyTags = uploadVillaRequest.PropertyTags
+                .Select(id => new VillaPropertyTag { VillaId = villa.VillaId, PropertyTagId = id })
                 .ToList();
-            await _dbContext.VillaPropertyTags.AddRangeAsync(propertyTags);
+            await _dbContext.VillaPropertyTags.AddRangeAsync(newPropertyTags);
             await _dbContext.SaveChangesAsync();
 
-            List<VillaLocationTag> existingLocationTags = await _dbContext.VillaLocationTags
+            // Sync location tags
+            var oldLocationTags = await _dbContext.VillaLocationTags
                 .Where(vlt => vlt.VillaId == villa.VillaId)
                 .ToListAsync();
-            _dbContext.VillaLocationTags.RemoveRange(existingLocationTags);
+            _dbContext.VillaLocationTags.RemoveRange(oldLocationTags);
             await _dbContext.SaveChangesAsync();
 
-            List<VillaLocationTag> locationTags = uploadVillaRequest.LocationTags
-                .Select(tagId => new VillaLocationTag { VillaId = villa.VillaId, LocationTagId = tagId })
+            var newLocationTags = uploadVillaRequest.LocationTags
+                .Select(id => new VillaLocationTag { VillaId = villa.VillaId, LocationTagId = id })
                 .ToList();
-            await _dbContext.VillaLocationTags.AddRangeAsync(locationTags);
+            await _dbContext.VillaLocationTags.AddRangeAsync(newLocationTags);
             await _dbContext.SaveChangesAsync();
 
-            transaction.Commit();
-            return RequestResponse.Successfull("Success", new() { { "data", System.Text.Json.JsonSerializer.Serialize(uploadVillaRequest) } });
-
+            // Done
+            await transaction.CommitAsync();
+            return RequestResponse.Successfull("Success", new() { { "data", JsonSerializer.Serialize(uploadVillaRequest) } });
         }
         catch (Exception ex)
         {
             Console.WriteLine("+-+-+-+-+-+-+-+-+-+-EROR+-+-+-+-+-+-+-+-");
             await transaction.RollbackAsync();
 
-            foreach (string file in createdFiles)
+            foreach (var file in createdFiles.Where(System.IO.File.Exists))
             {
-                if (System.IO.File.Exists(file))
-                {
-                    System.IO.File.Delete(file);
-                }
+                System.IO.File.Delete(file);
             }
 
-            if (Directory.Exists(GlobalLocation) && !Directory.EnumerateFileSystemEntries(GlobalLocation).Any())
+            if (Directory.Exists(fullImagePath) && !Directory.EnumerateFileSystemEntries(fullImagePath).Any())
             {
-                Directory.Delete(GlobalLocation);
+                Directory.Delete(fullImagePath);
             }
 
             return BadRequest(RequestResponse.Failed("Failed", new() { { "Reason", ex.Message } }));
