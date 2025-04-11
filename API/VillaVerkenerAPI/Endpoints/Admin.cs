@@ -1,148 +1,12 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace VillaVerkenerAPI.Endpoints;
-public class LoginRequest
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-}
-public class UploadVillaRequest
-{
-    public string VillaName { get; set; }
-    public string Description { get; set; }
-    public int Price { get; set; }
-    public string Location { get; set; }
-    public int Capacity { get; set; }
-    public int Bedrooms { get; set; }
-    public int Bathrooms { get; set; }
-    public List<IFormFile> Images { get; set; }
-    public IFormFile MainImage { get; set; }
-    public string PropertyTagsJson { get; set; }
-    public List<int> PropertyTags { get { return DeserializeTags(PropertyTagsJson); } }
-    public string LocationTagsJson { get; set; }
-    public List<int> LocationTags { get { return DeserializeTags(LocationTagsJson); } }
-
-    // Helper method for deserializing tags from JSON
-    private List<int> DeserializeTags(string json)
-    {
-        if (string.IsNullOrEmpty(json)) return new List<int>();
-        List<string> tags = System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
-        List<int> tagIds = new List<int>();
-        foreach (string tag in tags)
-        {
-            if (int.TryParse(tag, out int tagId))
-            {
-                tagIds.Add(tagId);
-            }
-        }
-        return tagIds;
-    }
-
-    // Validation method
-    public List<string> Validate(DBContext _dbContext)
-    {
-        List<string> errors = new List<string>();
-
-        if (string.IsNullOrEmpty(VillaName) || VillaName.Length > 45)
-        {
-            errors.Add("Villa Name must be between 1 and 45 characters.");
-        }
-
-        if (string.IsNullOrEmpty(Description))
-        {
-            errors.Add("Description must be more than 1 character.");
-        }
-        string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".avif",".webp" };
-        if (Images == null || Images.Count == 0)
-        {
-            errors.Add("Images are required.");
-        }
-        else 
-        {
-            if (Images.Count > 20)
-            {
-                errors.Add("You can upload a maximum of 20 images.");
-            }
-            else
-            {
-                foreach (IFormFile image in Images)
-                {
-                    if (image.Length > 5 * 1024 * 1024) // 5 MB limit
-                    {
-                        errors.Add("Image size should not exceed 5 MB.");
-                    }
-                    string fileExtension = Path.GetExtension(image.FileName).ToLower();
-                    if (!allowedExtensions.Contains(fileExtension))
-                    {
-                        errors.Add($"Invalid image format. Allowed formats: {string.Join(",",allowedExtensions).Replace(".","")}");
-                    }
-
-                }
-            }
-        }
-        if (MainImage == null)
-        {
-            errors.Add("Main Image is required.");
-        }
-        else
-        {
-            if (MainImage.Length > 5 * 1024 * 1024) // 5 MB limit
-            {
-                errors.Add("Main Image size should not exceed 5 MB.");
-            }
-            
-            string fileExtension = Path.GetExtension(MainImage.FileName).ToLower();
-            if (!allowedExtensions.Contains(fileExtension))
-            {
-                errors.Add($"Invalid image format. Allowed formats: {string.Join(",", allowedExtensions).Replace(".", "")}");
-            }
-        }
-
-        if (_dbContext.Villas.Any(v => v.Naam == VillaName))
-        {
-            errors.Add("Villa with this name already exists.");
-        }
-
-        // Validate PropertyTags presence
-        if (PropertyTags.Count == 0)
-        {
-            errors.Add("Property Tags are required.");
-        }
-
-        if (LocationTags.Count == 0)
-        {
-            errors.Add("Location Tags are required.");
-        }
-
-        if (Price <= 0)
-        {
-            errors.Add("Price should be greater than 0.");
-        }
-
-        if (Capacity <= 0)
-        {
-            errors.Add("Capacity should be greater than 0.");
-        }
-
-        if (Bedrooms <= 0)
-        {
-            errors.Add("Bedrooms should be greater than 0.");
-        }
-
-        if (Bathrooms <= 0)
-        {
-            errors.Add("Bathrooms should be greater than 0.");
-        }
-
-        return errors;
-    }
-}
 
 [Route("api/admin")]
 [ApiController]
@@ -216,10 +80,10 @@ public class AdminController : ControllerBase
             return Unauthorized(RequestResponse.Failed("Wrong", new Dictionary<string, string> { { "Reason", "Incorrect Password" } }));
         }
     }
-  
+
     private async Task<Image> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
     {
-        string path = await ImageUploader.UploadImage(image,location, folder, createdFiles);
+        string path = await ImageUploader.UploadImage(image, location, folder, createdFiles);
 
         return new Image
         {
@@ -227,8 +91,33 @@ public class AdminController : ControllerBase
         };
     }
 
+    private async Task<bool> DeleteImage(string location)
+    {
+        Image? image = await _dbContext.Images.FirstOrDefaultAsync(i => i.ImageLocation.Equals(location));
+        if (image != null)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", image.ImageLocation);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            else
+            {
+                Console.WriteLine($"--{filePath} not deleted--");
+            }
+            _dbContext.Images.Remove(image);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        else
+        {
+            Console.WriteLine($"--{location} not found--");
+        }
+            return false;
+    }
+
     [HttpPost("upload-villa")]
-    public async Task<ActionResult<RequestResponse>> UploadVilla([FromForm] UploadVillaRequest uploadVillaRequest)
+    public async Task<ActionResult<RequestResponse>> UploadVilla([FromForm] UploadAddVillaRequest uploadVillaRequest)
     {
         using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
 
@@ -301,10 +190,10 @@ public class AdminController : ControllerBase
 
             if (pdfResult.Success == false)
             {
-                return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "false" }, { "PDFPath","" } }));
+                return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "false" }, { "PDFPath", "" } }));
             }
 
-            return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "true" }, { "PDFPath", pdfPath  } }));
+            return Ok(RequestResponse.Successfull("Success", new() { { "path", Directory.GetCurrentDirectory() }, { "PDFGenerated", "true" }, { "PDFPath", pdfPath } }));
         }
         catch (Exception e)
         {
@@ -324,6 +213,148 @@ public class AdminController : ControllerBase
             }
 
             return BadRequest(RequestResponse.Failed("Failed", new() { { "Reason", e.Message } }));
+        }
+    }
+
+    [HttpPost("edit-villa")]
+    public async Task<ActionResult<RequestResponse>> EditVilla([FromForm] UploadEditVillaRequest uploadVillaRequest)
+    {
+        Console.WriteLine("---------EDIT----------------");
+        using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
+
+        List<string> createdFiles = new List<string>();
+        string GlobalFolder = "";
+        string GlobalLocation = Path.Combine(Directory.GetCurrentDirectory(), "Images", GlobalFolder);
+        try
+        {
+
+            Villa? villa = await _dbContext.Villas.FirstOrDefaultAsync(v => v.VillaId == uploadVillaRequest.VillaId);
+
+            if (villa == null)
+            {
+                return NotFound(RequestResponse.Failed("Villa not found", new() { { "Reason", "Invalid VillaId" } }));
+            }
+
+            List<string> validationErrors = uploadVillaRequest.Validate(_dbContext);
+            if (validationErrors.Count != 0)
+            {
+                string errorMessage = string.Join("\n", validationErrors);
+                return BadRequest(RequestResponse.Failed("Invalid input", new() { { "Reason", errorMessage } }));
+            }
+            villa.Naam = uploadVillaRequest.VillaName;
+            villa.Omschrijving = uploadVillaRequest.Description;
+            villa.Prijs = uploadVillaRequest.Price;
+            villa.Locatie = uploadVillaRequest.Location;
+            villa.Capaciteit = uploadVillaRequest.Capacity;
+            villa.Slaapkamers = uploadVillaRequest.Bedrooms;
+            villa.Badkamers = uploadVillaRequest.Bathrooms;
+
+            _dbContext.Villas.Update(villa);
+            await _dbContext.SaveChangesAsync();
+            Console.WriteLine("--------------UPDATED VILLA -----------------");
+
+            List<Image> existingImages = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+            string? folder = Path.GetDirectoryName(existingImages.FirstOrDefault(i => i.IsPrimary == 1)?.ImageLocation);
+            if (folder == null)
+            {
+                foreach (Image image in existingImages)
+                {
+                    if (image.IsPrimary == 0)
+                    {
+                        folder = Path.GetDirectoryName(image.ImageLocation);
+                        break;
+                    }
+                }
+            }
+            folder ??= Path.Combine(Directory.GetCurrentDirectory(), "Images", $"{Guid.NewGuid()}");
+            GlobalFolder = folder;
+            GlobalLocation = Path.Combine(Directory.GetCurrentDirectory(), "Images", GlobalFolder);
+            Directory.CreateDirectory(folder);
+
+            List<string> deletedImages = uploadVillaRequest.RemovedImagesJson != null ? JsonSerializer.Deserialize<List<string>>(uploadVillaRequest.RemovedImagesJson) ?? new List<string>() : new List<string>();
+            foreach (string imageUrl in deletedImages)
+            {
+                string[] pathParts = imageUrl.Split(Path.DirectorySeparatorChar);
+                string location = Path.Combine(pathParts[^2], pathParts[^1]);
+                await DeleteImage(location);
+            }
+            Console.WriteLine("--------------DELETED IMAGES--------------------");
+            foreach (IFormFile image in uploadVillaRequest.Images)
+            {
+                Image uploadedImage = await UploadImage(image, GlobalLocation, folder, createdFiles);
+                uploadedImage.VillaId = villa.VillaId;
+                _dbContext.Images.Add(uploadedImage);
+            }
+
+
+            // Upload main image
+            Image? currentMainImage = _dbContext.Images
+                    .Where(i => i.VillaId == villa.VillaId && i.IsPrimary == 1)
+                    .FirstOrDefault();
+            if (currentMainImage != null)
+            {
+                currentMainImage.IsPrimary = 0;
+                _dbContext.Images.Update(currentMainImage);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            if (uploadVillaRequest.MainImage != null)
+            {
+                Image uploadedPrimaryImage = await UploadImage(uploadVillaRequest.MainImage, GlobalLocation, folder, createdFiles);
+                uploadedPrimaryImage.VillaId = villa.VillaId;
+                uploadedPrimaryImage.IsPrimary = 1;
+                _dbContext.Images.Add(uploadedPrimaryImage);
+                await _dbContext.SaveChangesAsync();
+            }
+            else if (uploadVillaRequest.MainImageUrl != null)
+            {
+                Image? existingImage = await _dbContext.Images
+                    .Where(i => i.ImageLocation.Equals(uploadVillaRequest.GetLocation()))
+                    .FirstOrDefaultAsync();
+                if (existingImage != null)
+                {
+                    existingImage.IsPrimary = 1;
+                    _dbContext.Images.Update(existingImage);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+            Console.WriteLine("------------ADDED NEW IMAGES---------------");
+
+            Image? newMainImage = await _dbContext.Images
+                .Where(i => i.VillaId == villa.VillaId && i.IsPrimary == 1)
+                .FirstOrDefaultAsync();
+            if (newMainImage is null)
+            {
+                Console.WriteLine("setting old primary image back");
+                currentMainImage.IsPrimary = 1;
+                _dbContext.Images.Update(currentMainImage);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            transaction.Commit();
+            return RequestResponse.Successfull("Success", new() { { "data", System.Text.Json.JsonSerializer.Serialize(uploadVillaRequest) } });
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("+-+-+-+-+-+-+-+-+-+-EROR+-+-+-+-+-+-+-+-");
+            await transaction.RollbackAsync();
+
+            foreach (string file in createdFiles)
+            {
+                if (System.IO.File.Exists(file))
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+
+            if (Directory.Exists(GlobalLocation) && !Directory.EnumerateFileSystemEntries(GlobalLocation).Any())
+            {
+                Directory.Delete(GlobalLocation);
+            }
+
+            return BadRequest(RequestResponse.Failed("Failed", new() { { "Reason", ex.Message } }));
         }
     }
 }

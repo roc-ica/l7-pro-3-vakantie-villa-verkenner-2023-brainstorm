@@ -1,9 +1,9 @@
 ﻿using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
-using static System.Net.WebRequestMethods;
 
 namespace VillaVerkenerAPI.Models
 {
+
     public class SmallVilla
     {
         public int VillaID { get; set; }
