@@ -53,6 +53,9 @@ class VillaRequests extends Requests {
     static async getVillas() {
         return await this.request('GET', `${this.address}/get-all`);
     }
+    static async getAdminVillas() {
+        return await this.request('GET', `${this.address}/get-all-admin`,{}, true);
+    }
 
     static async getVillasByIDs(ids) {
         return await this.request('POST', `${this.address}/get-by-ids`, ids);

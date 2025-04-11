@@ -17,12 +17,35 @@ public class VillaController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
-    [HttpGet("get-all")]
+    
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
         List<Villa> villaEntities = await _dbContext.Villas.ToListAsync();
         List<SmallVilla> villas = villaEntities.Select(v => SmallVilla.From(v)).ToList();
+        return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
+    }
+
+    [HttpGet("get-all-admin")]
+    public async Task<ActionResult<RequestResponse>> GetAllAdminVillas([FromHeader(Name = "Authorization")] string authorizationHeader)
+    {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader,_dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
+
+        List<Villa> villaEntities = await _dbContext.Villas.ToListAsync();
+        List<Request> requests = await _dbContext.Requests.ToListAsync();
+        List<AdminVilla> villas = villaEntities.Select(v =>
+        {
+            v.Images = _dbContext.Images.Where(i => i.VillaId == v.VillaId).ToList();
+            List<AdminRequest> requestsForVilla = requests
+                .Where(r => r.VillaId == v.VillaId)
+                .Where(r => r.IsDeleted == 0)
+                .Select(r => AdminRequest.From(r))
+                .ToList();
+            return AdminVilla.From(v, requestsForVilla);
+        }).ToList();
         return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
     }
 

@@ -155,7 +155,7 @@ public class AdminController : ControllerBase
         _dbContext = dbContext;
     }
 
-    private async Task<bool> IsValidSession(string sessionKey)
+    private static async Task<bool> IsValidSession(string sessionKey,DBContext _dbContext)
     {
         Session? session = await _dbContext.Sessions
             .Where(session => session.ExpirationDate > DateTime.UtcNow)
@@ -166,18 +166,29 @@ public class AdminController : ControllerBase
     [HttpGet("is-allowed")]
     public async Task<ActionResult<RequestResponse>> IsAllowed([FromHeader(Name = "Authorization")] string authorizationHeader)
     {
-        string sessionKey = authorizationHeader.Split(" ")[1];
-        bool isValid = await IsValidSession(sessionKey);
+        bool isValid = await IsValidAuth(authorizationHeader, _dbContext);
         if (isValid)
         {
-            return Ok(RequestResponse.Successfull("Success"));
+            return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "IsAllowed", "true" } }));
         }
         else
         {
-            return Unauthorized(RequestResponse.Failed("Unauthorized"));
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid session" } }));
         }
     }
-
+    public static async Task<bool> IsValidAuth(string authorizationHeader, DBContext _dbContext)
+    {
+        string sessionKey = authorizationHeader.Split(" ")[1];
+        bool isValid = await IsValidSession(sessionKey,_dbContext);
+        if (isValid)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     [HttpPost("login")]
     public async Task<ActionResult<RequestResponse>> Login([FromBody] LoginRequest loginRequest)
