@@ -1,3 +1,13 @@
+* {
+    box-sizing: border-box;
+  }
+  
+.button-container{
+    text-align: right;
+    margin: 3rem;
+    margin-bottom: auto;
+}
+
 #addVillaButton {
     background-color: var(--green);
     border: none;
@@ -9,4 +19,125 @@
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+    font-weight: bold;
+    
 }
+
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+.card {
+    background-color: #5a7aa5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .card.highlight {
+    border: 3px dashed #a98cf5;
+  }
+
+  .card img {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px;
+  }
+
+  .info {
+    flex-grow: 1;
+  }
+
+  .info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: white;
+  }
+
+  .info p {
+    margin: 3px 0;
+    color: #e2e2e2;
+  }
+
+  .price {
+    font-size: 20px;
+    margin-top: 5px;
+    font-weight: bold;
+  }
+
+  .actions {
+    display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        /* position: relative; */
+        margin-right: 1rem;
+  
+  }
+
+  .actions small {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 20px;
+  }
+
+  .btn {
+    display: block;
+    margin: 5px 0;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    width: 120px;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+
+  .btn-edit {
+    background-color: var(--accent-primary);
+    padding: 1rem;
+    color: var(--text-color-light);
+  }
+
+  .btn-request {
+    background-color: var(--accent-primary);
+    color: var(--text-color-light);
+    position: relative;
+    padding: 1rem;
+  }
+
+  .btn-request::after {
+    content: "3";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #fff;
+    color: #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-delete {
+    background-color: red;
+    color: white;
+    text-align: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+ 
