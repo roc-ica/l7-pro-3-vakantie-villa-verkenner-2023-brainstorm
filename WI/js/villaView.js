@@ -2,7 +2,7 @@ async function getVilla(id) {
     let data = await VillaRequests.getVillaByID(id);
     if (data.success == false) {
         console.error("Failed to get villa");
-        // window.location.href = "index.html";
+        window.location.href = "index.html";
         return;
     }
 

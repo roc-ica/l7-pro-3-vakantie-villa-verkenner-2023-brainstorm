@@ -177,7 +177,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
 
         if (response.success) {
             alert("Villa updated successfully!");
-            // window.location.href = "VillaList.html";
+            window.location.href = "VillaList.html";
         } else {
             alert("Error: " + response.data.Reason);
         }
