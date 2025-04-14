@@ -3,21 +3,23 @@ async function checkLogin() {
     if (IsLoggedIn.success === false) {
         window.location.href = 'AdminLogin.html';
     }
-        const data = await VillaRequests.getAdminVillas();
-        console.log(JSON.parse(data.data.Villas));
 }
 checkLogin();
 
+let data = [];
+
 async function loadVillas() {
-    const data = await VillaRequests.getAdminVillas();
+    data = await VillaRequests.getAdminVillas();
     const villas = JSON.parse(data.data.Villas);
     console.log(villas);
     const container = document.getElementById("villaContainer");
 
     villas.forEach(villa => {
-      container.innerHTML += `
+        container.innerHTML += `
         <div class="card">
           <img src="${villa.VillaImagePath || ''}" alt="${villa.Name}">
+          <p class="description">${villa.description}</p>
+
           <div class="info">
             <h3>${villa.Name}</h3>
             <p>${villa.Location}</p>
@@ -26,12 +28,61 @@ async function loadVillas() {
           <div class="actions">
             <small>ACTIES</small>
             <button class="btn btn-edit">Bewerken</button>
-            <button class="btn btn-request">Request</button>
+<button class="btn btn-request" onclick="openRequestModal(${villa.VillaID})">Request</button>
           </div>
           <button class="btn btn-delete">Verwijderen</button>
         </div>
       `;
     });
-  }
+}
 
-  loadVillas();
+
+async function openRequestModal(villaId) {
+    const modal = document.getElementById("requestModal");
+    const requestList = document.getElementById("requestList");
+    requestList.innerHTML = "<p>Laden...</p>";
+
+    try {
+        const requests = JSON.parse(data.data.Villas).filter(villa => villa.VillaID === villaId)[0].Requests;
+        requestList.innerHTML = "";
+        console.log(requests);
+        if (requests.length === 0) {
+            requestList.innerHTML = "<p>Geen verzoeken gevonden.</p>";
+        } else {
+            requests.forEach(email => {
+                console.log(email);
+                requestList.innerHTML += `
+            <div class="request-item">
+              <span>${email.Email}</span>
+              <span>
+                <i class="fas fa-copy" style="cursor:pointer;" onclick="copyToClipboard('${email}')"></i>
+                <i class="fas fa-check" style="color:green;"></i>
+              </span>
+            </div>
+            <div class="request-item">
+            <p>${email.RequestMessage}</p>
+            </div>
+          `;
+            });
+        }
+
+        modal.style.display = "flex";
+
+    } catch (err) {
+        console.error(err);
+        requestList.innerHTML = "<p>Fout bij laden van verzoeken.</p>";
+        modal.style.display = "flex";
+    }
+}
+
+function closeModal() {
+    document.getElementById("requestModal").style.display = "none";
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert(`Gekopieerd: ${text}`);
+    });
+}
+
+loadVillas();

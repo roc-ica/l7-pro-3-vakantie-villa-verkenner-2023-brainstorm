@@ -141,3 +141,47 @@
     margin-top: 1rem;
   }
  
+  .modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: #5583a9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    color: white;
+    position: relative;
+  }
+  
+  .modal-content .close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  
+  #requestList {
+    margin-top: 20px;
+  }
+  
+  .request-item {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-bottom: 6px;
+  }
