@@ -27,7 +27,7 @@ async function loadVillas() {
           </div>
           <div class="actions">
             <small>ACTIES</small>
-            <button class="btn btn-edit">Bewerken</button>
+<button class="btn btn-edit" onclick="editVilla(${villa.VillaID})">Bewerken</button>
 <button class="btn btn-request" id="count_${villa.VillaID}" onclick="openRequestModal(${villa.VillaID})">Request</button>
           </div>
           <button class="btn btn-delete">Verwijderen</button>
@@ -40,8 +40,17 @@ async function loadVillas() {
   });
   document.head.appendChild(tempCSS);
 
+  document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', () => {
+      document.getElementById('deleteModal').style.display = 'flex';
+    });
+  });
+
 }
 
+function editVilla(villaID) {
+  window.location.href = `adminEditVilla.html?villaID=${villaID}`;
+}
 
 async function openRequestModal(villaId) {
   const modal = document.getElementById("requestModal");
@@ -59,19 +68,16 @@ async function openRequestModal(villaId) {
         console.log(email);
         requestList.innerHTML += `
             <div class="request-item">
-              <span>${email.Email}</span>
-              <span>
+                <span style="color: var(--text-color-dark);">${email.Email}</span>          
                 <i class="fas fa-copy" style="cursor:pointer;" onclick="copyToClipboard('${email}')"></i>
-                <i class="fas fa-check" style="color:green;"></i>
               </span>
             </div>
             <div class="request-item">
-            <p>${email.RequestMessage}</p>
+    <p style="color: var(--text-color-dark);">${email.RequestMessage}</p>
             </div>
           `;
       });
     }
-
     modal.style.display = "flex";
 
   } catch (err) {
@@ -79,6 +85,16 @@ async function openRequestModal(villaId) {
     requestList.innerHTML = "<p>Fout bij laden van verzoeken.</p>";
     modal.style.display = "flex";
   }
+}
+
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+function confirmDelete() {
+  console.log('Verwijder-actie');
+  closeDeleteModal();
 }
 
 function closeModal() {
