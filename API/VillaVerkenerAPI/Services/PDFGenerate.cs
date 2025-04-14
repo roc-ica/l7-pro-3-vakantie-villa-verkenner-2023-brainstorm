@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using System.Text;
 using VillaVerkenerAPI.Models.DB;
 
 namespace VillaVerkenerAPI.Services
@@ -130,7 +129,7 @@ namespace VillaVerkenerAPI.Services
             return new[] { imageBlock, combinedTop };
         }
 
-        private ItemSize drawImage(Villa villa,ItemSize combinedTop,PageItem page)
+        private ItemSize drawImage(Villa villa, ItemSize combinedTop, PageItem page)
         {
             ItemSize imageBlock = new ItemSize(combinedTop.Bottom, _layout.MarginLeft, _layout.ImageMaxWidth, _layout.ImageMaxHeight);
             Image? image = villa.Images.FirstOrDefault(i => i.IsPrimary == 1);
@@ -192,7 +191,7 @@ namespace VillaVerkenerAPI.Services
 
             return ItemSize.Combine(new[] { previousBlock, textBlock });
         }
-        
+
         private ItemSize AddDescription(Villa villa, ItemSize previousBlock, PageItem page)
         {
             string[] lines = StringExtensions.LimitLineLength(villa.Omschrijving, 70);
@@ -210,7 +209,7 @@ namespace VillaVerkenerAPI.Services
 
             return block;
         }
-        
+
         private ItemSize AddFailedImageBlock(ItemSize placeholder, PageItem page)
         {
             Console.WriteLine("Rendering failed image block...");

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VillaVerkenerAPI.Models.DB;
+﻿namespace VillaVerkenerAPI.Models.DB;
 
 public partial class Image
 {

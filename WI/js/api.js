@@ -64,6 +64,9 @@ class VillaRequests extends Requests {
     static async getVillaByID(id) {
         return await this.request('POST', `${this.address}/get-by-id`, id);
     }
+    static async getVillaByIDEdit(id) {
+        return await this.request('POST', `${this.address}/get-by-id-edit`, id);
+    }
 
     static async getTags() {
         return await this.request('GET', `${this.address}/get-tags`);
@@ -91,6 +94,9 @@ class AdminRequest extends Requests {
 
     static async addVilla(data) {
         return await this.request('POST', `${this.address}/upload-villa`, data, true);
+    }
+    static async editVilla(data) {
+        return await this.request('POST', `${this.address}/edit-villa`, data, true);
     }
 }
 

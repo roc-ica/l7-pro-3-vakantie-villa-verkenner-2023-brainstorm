@@ -4,7 +4,7 @@ namespace VillaVerkenerAPI.Services
 {
     public static class ImageUploader
     {
-        public static  async Task<string> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
+        public static async Task<string> UploadImage(IFormFile image, string location, string folder, List<string> createdFiles)
         {
             using MemoryStream stream = new MemoryStream();
             await image.CopyToAsync(stream);

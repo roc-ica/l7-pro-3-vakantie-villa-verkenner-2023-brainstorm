@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
-using VillaVerkenerAPI.Models;
+﻿using System.Net.Mail;
+using Microsoft.AspNetCore.Mvc;
 using VillaVerkenerAPI.Models.DB;
 using VillaVerkenerAPI.Services;
-using static VillaVerkenerAPI.Endpoints.MoreInfoRequestController;
 
-namespace VillaVerkenerAPI.Endpoints;
+namespace VillaVerkenerAPI.Models;
 
 public class MoreInfoRequest
 {
@@ -53,12 +48,12 @@ public class MoreInfoRequestController(DBContext dbContext) : ControllerBase
 
         return Ok(RequestResponse.Successfull("Request for more info successfull!"));
     }
-    
+
     private static bool IsValidEmail(string email)
     {
         try
         {
-            MailAddress m = new (email);
+            MailAddress m = new(email);
 
             return true;
         }

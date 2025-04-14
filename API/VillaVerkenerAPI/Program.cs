@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using MySql.EntityFrameworkCore.Extensions;
 using VillaVerkenerAPI.Models.DB;
 
 var builder = WebApplication.CreateBuilder(args);

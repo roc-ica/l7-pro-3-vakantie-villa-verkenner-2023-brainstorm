@@ -1,6 +1,6 @@
 
 async function getVillas() {
-    const ids = [1, 2];
+    const ids = [34, 35];
     for (let i = 0; i < ids.length; i++) {
         document.getElementsByClassName('villaContainer')[0].innerHTML += `
             <div class="villaCard">
