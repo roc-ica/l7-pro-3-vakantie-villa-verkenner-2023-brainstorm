@@ -18,8 +18,6 @@ async function loadVillas() {
     container.innerHTML += `
         <div class="card">
           <img src="${villa.VillaImagePath || ''}" alt="${villa.Name}">
-          <p class="description">${villa.description}</p>
-
           <div class="info">
             <h3>${villa.Name}</h3>
             <p>${villa.Location}</p>
@@ -69,7 +67,12 @@ async function openRequestModal(villaId) {
         requestList.innerHTML += `
             <div class="request-item">
                 <span style="color: var(--text-color-dark);">${email.Email}</span>          
-                <i class="fas fa-copy" style="cursor:pointer;" onclick="copyToClipboard('${email}')"></i>
+                <i class="fas fa-copy" style="cursor:pointer;" onclick="closeRequest('${email.RequestID}', '${villaId}')" title="Verwijder verzoek">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+	<path d="M1 10 6 16 18 5" fill="none" opacity="1" stroke-width="3" stroke="lime" stroke-linejoin="round" stroke-linecap="round" />
+</svg>
+                </i>
               </span>
             </div>
             <div class="request-item">
@@ -101,10 +104,14 @@ function closeModal() {
   document.getElementById("requestModal").style.display = "none";
 }
 
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    alert(`Gekopieerd: ${text}`);
-  });
+function closeRequest(id, villaId) {
+  console.log(id);
+  // remove request from local storage to prevent from having to reload the page
+  villaId = parseInt(villaId);
+
+
+  // closeModal();
+  // openRequestModal(id);
 }
 
 loadVillas();
