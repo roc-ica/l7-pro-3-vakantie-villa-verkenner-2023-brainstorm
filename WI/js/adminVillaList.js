@@ -65,19 +65,18 @@ async function openRequestModal(villaId) {
       requests.forEach(email => {
         console.log(email);
         requestList.innerHTML += `
-            <div class="request-item">
-                <span style="color: var(--text-color-dark);">${email.Email}</span>          
-                <i class="fas fa-copy" style="cursor:pointer;" onclick="closeRequest('${email.RequestID}', '${villaId}')" title="Verwijder verzoek">
-                
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-	<path d="M1 10 6 16 18 5" fill="none" opacity="1" stroke-width="3" stroke="lime" stroke-linejoin="round" stroke-linecap="round" />
-</svg>
-                </i>
-              </span>
-            </div>
-            <div class="request-item">
-    <p style="color: var(--text-color-dark);">${email.RequestMessage}</p>
-            </div>
+      <div class="request-item">
+  <span style="color: var(--text-color-dark);">${email.Email}</span>          
+  <i class="fas fa-copy" style="cursor:pointer;" onclick="closeRequest('${email.RequestID}', '${villaId}')" title="Verwijder verzoek">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+      <path d="M1 10 6 16 18 5" fill="none" opacity="1" stroke-width="3" stroke="lime" stroke-linejoin="round" stroke-linecap="round" />
+    </svg>
+  </i>
+</div>
+<div class="request-item">
+  <p style="color: var(--text-color-dark);">${email.RequestMessage}</p>
+</div>
+
           `;
       });
     }
@@ -105,13 +104,31 @@ function closeModal() {
 }
 
 function closeRequest(id, villaId) {
-  console.log(id);
-  // remove request from local storage to prevent from having to reload the page
+  console.log("RequestID:", id, "VillaID:", villaId);
   villaId = parseInt(villaId);
 
+  const clickedIcon = event.target.closest("i");
 
-  // closeModal();
-  // openRequestModal(id);
+  if (clickedIcon) {
+    const firstItem = clickedIcon.closest(".request-item");
+    const secondItem = firstItem.nextElementSibling;
+
+    if (firstItem && secondItem && secondItem.classList.contains("request-item")) {
+      firstItem.remove();
+      secondItem.remove();
+    }
+  }
+
+  let villas = JSON.parse(data.data.Villas);
+
+  let targetVilla = villas.find(v => v.VillaID === villaId);
+  if (targetVilla) {
+    targetVilla.Requests = targetVilla.Requests.filter(req => req.RequestID !== id);
+    console.log("Updated villa requests:", targetVilla.Requests);
+  }
+
+  data.data.Villas = JSON.stringify(villas);
 }
+
 
 loadVillas();
