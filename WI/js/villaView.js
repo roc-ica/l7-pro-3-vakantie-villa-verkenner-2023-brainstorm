@@ -1,13 +1,14 @@
 async function getVilla(id) {
     let data = await VillaRequests.getVillaByID(id);
+
     if (data.success == false) {
         console.error("Failed to get villa");
         window.location.href = "index.html";
+
         return;
     }
 
     let villa = JSON.parse(data.data.Villa);
-
     document.getElementById("villaName").innerText = villa.Name;
     document.getElementById("villaDescription").innerText = villa.Description;
     document.getElementById("villaImage").src = villa.VillaMainImagePath;
@@ -30,27 +31,31 @@ function downloadPDF() {
     if (downloadButton.classList.contains("disabled")) {
         return;
     }
+
     window.open(path, "_blank");
 }
 
-
 async function setPdfPath(id) {
     let pdfPath = await PDFRequests.generatePDF(id);
-    console.log(pdfPath);
+    console.log(pdfPath); // moeten de console.logs nog?
     if (pdfPath.success == false) {
         console.error("Failed to get pdf path");
+
         return;
     }
+
     console.log(pdfPath.data);
     path = pdfPath.data.PDF;
     downloadButton.classList.remove("disabled");
 }
+
 const downloadButton = document.getElementById("flyerButton");
 downloadButton.classList.add("disabled");
 
 // get id from url
 let url = new URL(window.location.href);
 let id = url.searchParams.get("villaID");
+
 // convert id to number
 getVilla(Number(id));
 setPdfPath(Number(id));

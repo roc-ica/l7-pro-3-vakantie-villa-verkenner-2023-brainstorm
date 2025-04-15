@@ -1,7 +1,7 @@
 const form = document.getElementById('login-form');
 const emailField = document.getElementById('email');
 const passwordField = document.getElementById('password');
-const Login_Popup = document.getElementById('login-message');
+const loginPopup = document.getElementById('login-message'); // matchet deze classnaam met de readme?
 
 form.onsubmit = async function (event) {
     event.preventDefault();
@@ -11,20 +11,20 @@ form.onsubmit = async function (event) {
     const email = emailField.value;
     const password = passwordField.value;
 
-    const IsLoggedIn = await AdminRequest.login(email, password);
+    const isLoggedIn = await AdminRequest.login(email, password);
 
-    if (IsLoggedIn.success === true) {
-        sessionStorage.setItem('SessionKey', IsLoggedIn.data.SessionKey);
+    if (isLoggedIn.success === true) {
+        sessionStorage.setItem('SessionKey', isLoggedIn.data.SessionKey);
         window.location.href = 'VillaList.html';
     } else {
-        showErrorMessage(IsLoggedIn.data.Reason);
+        showErrorMessage(isLoggedIn.data.Reason);
     }
 };
 
 function hideErrorMessage() {
     form.querySelector('button').disabled = true;
-    Login_Popup.style.display = 'none';
-    Login_Popup.textContent = '';
+    loginPopup.style.display = 'none';
+    loginPopup.textContent = '';
 }
 
 function showErrorMessage(message) {
@@ -32,16 +32,18 @@ function showErrorMessage(message) {
     passwordField.disabled = false;
     form.querySelector('button').disabled = false;
 
-    Login_Popup.textContent = message;
-    Login_Popup.style.display = 'block';
+    loginPopup.textContent = message;
+    loginPopup.style.display = 'block';
 }
 
 hideErrorMessage();
 
 async function checkLogin() {
-    const IsLoggedIn = await AdminRequest.IsLoggedIn();
-    if (IsLoggedIn.success === true) {
+    const isLoggedIn = await AdminRequest.IsLoggedIn();
+    
+    if (isLoggedIn.success === true) { // kan (isLoggedIn.success) niet gewoon?
         window.location.href = 'VillaList.html';
     }
 }
+
 checkLogin();

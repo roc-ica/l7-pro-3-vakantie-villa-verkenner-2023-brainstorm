@@ -13,11 +13,10 @@ const filterConfig = {
 };
 
 const FormattedFilters = {}
-
 let Tags = [];
 let Villas = [];
-async function getVillas() {
 
+async function getVillas() {
     [Villas, Tags] = await Promise.all([
         VillaRequests.getVillas(),
         VillaRequests.getTags()
@@ -25,14 +24,17 @@ async function getVillas() {
 
     if (Villas.success === false) {
         console.log(Villas.error);
+
         return;
     }
 
     updateVillaDisplay();
     if (Tags.success === false) {
         console.log(Tags.error);
+
         return;
     }
+
     let PropertyTags = JSON.parse(Tags.data.PropertyTags);
     let locationTags = JSON.parse(Tags.data.LocationTags);
 
@@ -62,13 +64,14 @@ function updateVillaDisplay() {
     document.getElementsByClassName('villaList')[0].innerHTML = '';
 
     if (villaData.length === 0) {
-        document.getElementsByClassName('villaList')[0].innerHTML = `
-            <div class="villaCard">
+        document.getElementsByClassName('villaList')[0].innerHTML = 
+        `<div class="villaCard">
                 <p style="margin-left:5px;">No villas found</p>
-            </div>
-        `;
+            </div>`;
+
         return;
     }
+
     for (let i = 0; i < villaData.length; i++) {
         const villa = new SmallVilla(villaData[i]);
         document.getElementsByClassName('villaList')[0].innerHTML += villa.html;
@@ -86,6 +89,7 @@ function initializeRangeSlider(container) {
     const settings = { minRangeGap: 1, stepSize: 1 };
 
 
+    //kan dit misschien in een for loopje? of is het ingewikkelder dan het lijkt?
     rangeInputs[0].min = initialMin;
     rangeInputs[0].max = initialMax;
     rangeInputs[1].min = initialMin;
@@ -103,6 +107,7 @@ function initializeRangeSlider(container) {
     rangePrices[1].value = initialMax;
     rangePrices[0].step = settings.stepSize;
     rangePrices[1].step = settings.stepSize;
+
     handlePriceInput();
     handleRangeInput();
     updateSlider();
@@ -112,7 +117,6 @@ function initializeRangeSlider(container) {
         min: initialMin,
         max: initialMax
     };
-
 
     function updateSlider() {
         const minValue = parseInt(rangeInputs[0].value);
@@ -129,18 +133,19 @@ function initializeRangeSlider(container) {
         range.style.right = rightPercent + "%";
     }
 
-
     function updateFilterValues() {
         filterValues[filterTitle] = {
             min: parseInt(rangeInputs[0].value),
             max: parseInt(rangeInputs[1].value)
         };
+
         UpdateAllFilterValues();
     }
 
     function handlePriceInput() {
         let minPrice = parseInt(rangePrices[0].value);
         let maxPrice = parseInt(rangePrices[1].value);
+
         if (maxPrice - minPrice >= settings.minRangeGap) {
             rangeInputs[0].value = minPrice;
             rangeInputs[1].value = maxPrice;
@@ -151,8 +156,10 @@ function initializeRangeSlider(container) {
                 rangePrices[0].value = maxPrice - settings.minRangeGap;
             }
         }
+        
         rangeInputs[0].value = rangePrices[0].value;
         rangeInputs[1].value = rangePrices[1].value;
+        
         updateSlider();
         updateFilterValues();
     }
@@ -160,6 +167,7 @@ function initializeRangeSlider(container) {
     function handleRangeInput() {
         let minRange = parseInt(rangeInputs[0].value);
         let maxRange = parseInt(rangeInputs[1].value);
+        
         if (maxRange - minRange < settings.minRangeGap) {
             if (this === rangeInputs[0]) {
                 rangeInputs[0].value = maxRange - settings.minRangeGap;
@@ -170,6 +178,7 @@ function initializeRangeSlider(container) {
             rangePrices[0].value = minRange;
             rangePrices[1].value = maxRange;
         }
+        
         updateSlider();
         updateFilterValues();
     }
@@ -182,7 +191,7 @@ let timeout = null;
 
 function UpdateAllFilterValues() {
     const propertyTags = Array.from(document.querySelectorAll(".tagCheckBox:checked")).map(input => input.value);
-    console.log(propertyTags);
+    console.log(propertyTags); //is dit nog nodig?
     const locationTags = Array.from(document.querySelectorAll("#locationTagsContainer input:checked")).map(input => input.value);
     const search = document.getElementById("searchField").value;
     const location = document.getElementById("locationSearchField").value;
@@ -207,12 +216,15 @@ function UpdateAllFilterValues() {
     if (timeout) {
         clearTimeout(timeout);
     }
+    
     timeout = setTimeout(async () => {
         Villas = await VillaRequests.getVillasByFilters(FormattedFilters);
         if (Villas.success === false) {
             console.log(Villas.error);
+
             return;
         }
+        
         updateVillaDisplay();
     }, 500);
 }
