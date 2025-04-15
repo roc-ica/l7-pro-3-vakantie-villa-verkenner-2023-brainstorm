@@ -381,6 +381,11 @@ public class AdminController : ControllerBase
 
             // Done
             await transaction.CommitAsync();
+
+            PDFGenerate pdfGenerate = new PDFGenerate();
+            string pdfPath = Path.Combine(Directory.GetCurrentDirectory(), "Images","PDF",$"flyer_{villa.Naam.Trim().Replace(" ", "_")}.pdf");
+            RequestResponse pdfResult = pdfGenerate.Main(villa, pdfPath, shouldRegenerate: true );
+
             return RequestResponse.Successfull("Success", new() { { "data", JsonSerializer.Serialize(uploadVillaRequest) } });
         }
         catch (Exception ex)

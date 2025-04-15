@@ -65,7 +65,7 @@ class VillaRequests extends Requests {
         return await this.request('POST', `${this.address}/get-by-id`, id);
     }
     static async getVillaByIDEdit(id) {
-        return await this.request('POST', `${this.address}/get-by-id-edit`, id);
+        return await this.request('POST', `${this.address}/get-by-id-edit`, id, true);
     }
 
     static async getTags() {
