@@ -41,6 +41,8 @@ async function loadVillas() {
   document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', () => {
       document.getElementById('deleteModal').style.display = 'flex';
+      villaId = parseInt(button.parentElement.parentElement.querySelector('.btn-request').id.split('_')[1]);
+      document.getElementById('deleteConfirm').setAttribute('data-id', villaId);
     });
   });
 
@@ -94,8 +96,9 @@ function closeDeleteModal() {
   document.getElementById('deleteModal').style.display = 'none';
 }
 
-function confirmDelete() {
-  console.log('Verwijder-actie');
+async function confirmDelete() {
+  const villaId = parseInt(document.getElementById('deleteConfirm').getAttribute('data-id'));
+  await VillaRequests.deleteVilla(villaId);
   closeDeleteModal();
 }
 

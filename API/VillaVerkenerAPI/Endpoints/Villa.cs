@@ -20,7 +20,7 @@ public class VillaController : ControllerBase
     
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
-        List<Villa> villaEntities = await _dbContext.Villas.ToListAsync();
+        List<Villa> villaEntities = await _dbContext.Villas.Where(v => v.IsDeleted == 0).ToListAsync();
         List<SmallVilla> villas = villaEntities.Select(v => SmallVilla.From(v)).ToList();
         return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
     }
@@ -34,8 +34,8 @@ public class VillaController : ControllerBase
             return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
         }
 
-        List<Villa> villaEntities = await _dbContext.Villas.ToListAsync();
-        List<Request> requests = await _dbContext.Requests.ToListAsync();
+        List<Villa> villaEntities = await _dbContext.Villas.Where(v => v.IsDeleted == 0).ToListAsync();
+        List<Request> requests = await _dbContext.Requests.Where(r => r.IsDeleted == 0).ToListAsync();
         List<AdminVilla> villas = villaEntities.Select(v =>
         {
             v.Images = _dbContext.Images.Where(i => i.VillaId == v.VillaId).ToList();
@@ -58,8 +58,9 @@ public class VillaController : ControllerBase
         }
 
         List<Villa> villaEntities = await _dbContext.Villas
-                   .Where(v => ids.Contains(v.VillaId))
-                   .ToListAsync();
+            .Where(v => v.IsDeleted == 0)
+            .Where(v => ids.Contains(v.VillaId))
+            .ToListAsync();
 
         foreach (Villa villa in villaEntities)
         {
@@ -87,6 +88,7 @@ public class VillaController : ControllerBase
         }
         Villa? villa = await _dbContext.Villas
             .Where(v => v.VillaId == id)
+            .Where(v => v.IsDeleted == 0)
             .FirstOrDefaultAsync();
         if (villa == null)
         {
@@ -106,6 +108,7 @@ public class VillaController : ControllerBase
         }
         Villa? villa = await _dbContext.Villas
             .Where(v => v.VillaId == id)
+            .Where(v => v.IsDeleted == 0)
             .FirstOrDefaultAsync();
         if (villa == null)
         {
@@ -153,6 +156,7 @@ public class VillaController : ControllerBase
         Console.WriteLine(filters);
 
         List<SmallVilla> filteredVillas = await _dbContext.Villas
+            .Where(v => v.IsDeleted == 0)
             .Where(v => filters.Search != null ? v.Naam.Contains(filters.Search) : true)
             .Where(v => filters.Location != null ? v.Locatie.Contains(filters.Location) : true)
             .Where(v => filters.MinPrice > 0 ? v.Prijs >= filters.MinPrice : true)
@@ -177,5 +181,23 @@ public class VillaController : ControllerBase
         });
 
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(filteredVillas) } }));
+    }
+
+    [HttpPost("delete")]
+    public async Task<ActionResult<RequestResponse>> deleteVilla([FromBody] int id)
+    {
+        Villa? villa = await _dbContext.Villas
+            .Where(v => v.VillaId == id)
+            .Where(v => v.IsDeleted == 0)
+            .FirstOrDefaultAsync();
+        if (villa == null)
+        {
+            return NotFound(RequestResponse.Failed("No villa found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
+        }
+        villa.IsDeleted = 1;
+        villa.DeletedAt = DateTime.Now;
+        _dbContext.Villas.Update(villa);    
+        await _dbContext.SaveChangesAsync();
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(villa) } }));
     }
 }

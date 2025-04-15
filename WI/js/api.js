@@ -54,7 +54,7 @@ class VillaRequests extends Requests {
         return await this.request('GET', `${this.address}/get-all`);
     }
     static async getAdminVillas() {
-        return await this.request('GET', `${this.address}/get-all-admin`,{}, true);
+        return await this.request('GET', `${this.address}/get-all-admin`, {}, true);
     }
 
     static async getVillasByIDs(ids) {
@@ -74,6 +74,9 @@ class VillaRequests extends Requests {
 
     static async getVillasByFilters(filters) {
         return await this.request('POST', `${this.address}/get-by-filters`, filters);
+    }
+    static async deleteVilla(id) {
+        return await this.request('POST', `${this.address}/delete`, id, true);
     }
 }
 
