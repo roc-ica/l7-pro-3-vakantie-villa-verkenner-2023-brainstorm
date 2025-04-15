@@ -128,8 +128,13 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("upload-villa")]
-    public async Task<ActionResult<RequestResponse>> UploadVilla([FromForm] UploadAddVillaRequest uploadVillaRequest)
+    public async Task<ActionResult<RequestResponse>> UploadVilla([FromForm] UploadAddVillaRequest uploadVillaRequest, [FromHeader(Name = "Authorization")] string authorizationHeader)
     {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
         using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
 
         List<string> createdFiles = new List<string>();
@@ -228,8 +233,13 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("edit-villa")]
-    public async Task<ActionResult<RequestResponse>> EditVilla([FromForm] UploadEditVillaRequest uploadVillaRequest)
+    public async Task<ActionResult<RequestResponse>> EditVilla([FromForm] UploadEditVillaRequest uploadVillaRequest, [FromHeader(Name = "Authorization")] string authorizationHeader)
     {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
         Console.WriteLine("---------EDIT----------------");
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();

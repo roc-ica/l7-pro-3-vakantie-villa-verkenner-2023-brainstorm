@@ -100,8 +100,13 @@ public class VillaController : ControllerBase
     }
 
     [HttpPost("get-by-id-edit")]
-    public async Task<ActionResult<RequestResponse>> GetVillaByIdEdit([FromBody] int id)
+    public async Task<ActionResult<RequestResponse>> GetVillaByIdEdit([FromBody] int id, [FromHeader(Name = "Authorization")] string authorizationHeader)
     {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
         if (id <= 0)
         {
             return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Id is required" } }));
@@ -184,8 +189,13 @@ public class VillaController : ControllerBase
     }
 
     [HttpPost("delete")]
-    public async Task<ActionResult<RequestResponse>> deleteVilla([FromBody] int id)
+    public async Task<ActionResult<RequestResponse>> deleteVilla([FromBody] int id, [FromHeader(Name = "Authorization")] string authorizationHeader)
     {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
         Villa? villa = await _dbContext.Villas
             .Where(v => v.VillaId == id)
             .Where(v => v.IsDeleted == 0)
@@ -208,8 +218,13 @@ public class VillaController : ControllerBase
     }
 
     [HttpPost("delete-request")]
-    public async Task<ActionResult<RequestResponse>> deleteRequest([FromBody] RequestBody body)
+    public async Task<ActionResult<RequestResponse>> deleteRequest([FromBody] RequestBody body, [FromHeader(Name = "Authorization")] string authorizationHeader)
     {
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
+        if (!isAllowed)
+        {
+            return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
+        }
         Request? request = await _dbContext.Requests
             .Where(r => r.RequestId == body.RequestID)
             .Where(r => r.VillaId == body.VillaID)
