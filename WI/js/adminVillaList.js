@@ -154,19 +154,18 @@ async function openRequestModal(villaId) {
       requests.forEach(email => {
         console.log(email);
         requestList.innerHTML += `
-            <div class="request-item">
-                <span style="color: var(--text-color-dark);">${email.Email}</span>          
-                <i class="fas fa-copy" style="cursor:pointer;" onclick="closeRequest('${email.RequestID}', '${villaId}')" title="Verwijder verzoek">
-                
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-	<path d="M1 10 6 16 18 5" fill="none" opacity="1" stroke-width="3" stroke="lime" stroke-linejoin="round" stroke-linecap="round" />
-</svg>
-                </i>
-              </span>
-            </div>
-            <div class="request-item">
-    <p style="color: var(--text-color-dark);">${email.RequestMessage}</p>
-            </div>
+      <div class="request-item">
+  <span style="color: var(--text-color-dark);">${email.Email}</span>          
+  <i class="fas fa-copy" style="cursor:pointer;" onclick="closeRequest('${email.RequestID}', '${villaId}')" title="Verwijder verzoek">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+      <path d="M1 10 6 16 18 5" fill="none" opacity="1" stroke-width="3" stroke="lime" stroke-linejoin="round" stroke-linecap="round" />
+    </svg>
+  </i>
+</div>
+<div class="request-item">
+  <p style="color: var(--text-color-dark);">${email.RequestMessage}</p>
+</div>
+
           `;
       });
     }
@@ -200,5 +199,6 @@ async function closeRequest(id, villaId) {
   Data.deleteRequest(villaId, id);
   await VillaRequests.deleteRequest(villaId, id);
 }
+
 
 loadVillas();
