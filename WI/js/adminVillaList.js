@@ -7,14 +7,104 @@ async function checkLogin() {
 checkLogin();
 
 let data = [];
+class VillaHandler {
+  constructor() {
+    this.Villas = [];
+  }
 
-async function loadVillas() {
-  data = await VillaRequests.getAdminVillas();
-  const villas = JSON.parse(data.data.Villas);
-  console.log(villas);
+  getRequests(villaID) {
+    const villa = this.Villas.find(v => v.VillaID === villaID);
+    if (!villa) return [];
+    return villa.Requests;
+  }
+
+  deleteRequest(villaID, requestID) {
+    const villa = this.Villas.find(v => v.VillaID === villaID);
+    if (!villa) return [];
+    let success = villa.deleteRequest(requestID);
+    console.log("success", success);
+    console.log("refreshing request modal");
+    openRequestModal(villaID);// open the request modal to show the requests
+    loadVillas(false);// reload the villa list without fetching data again
+    return villa.Requests;
+  }
+
+  deleteVilla(villaID) {
+    console.log("deleting villa", villaID);
+    const villaIndex = this.Villas.findIndex(v => parseInt(v.VillaID) === parseInt(villaID));
+    console.log("villaIndex", villaIndex);
+    if (villaIndex === -1) return false;
+    this.Villas.splice(villaIndex, 1);
+    console.log("deleted villa", villaID);
+    loadVillas(false);// reload the villa list without fetching data again
+    return true;
+  }
+
+  addVilla(villa) {
+    this.Villas.push(villa);
+  }
+  clear() {
+    this.Villas = [];
+  }
+}
+
+class Villa {
+  constructor(villaID, name, location, price, VillaImagePath, requests) {
+    this.VillaID = villaID;
+    this.Name = name;
+    this.Location = location;
+    this.Price = price;
+    this.VillaImagePath = VillaImagePath;
+    this.Requests = requests;
+  }
+  deleteRequest(requestID) {
+    console.log("deleting request", requestID);
+    console.log("requests", this.Requests);
+    const request = this.Requests.find(r => r.RequestID === parseInt(requestID));
+    if (!request) return false;
+    this.Requests = this.Requests.filter(r => r.RequestID !== parseInt(requestID));
+    return true;
+  }
+}
+
+class Request {
+  constructor(requestID, email, requestMessage) {
+    this.RequestID = requestID;
+    this.Email = email;
+    this.RequestMessage = requestMessage;
+  }
+}
+
+const Data = new VillaHandler();
+
+async function loadVillas(getData = true) {
+  if (getData) {
+    Data.clear();
+    data = await VillaRequests.getAdminVillas();
+    const villas = JSON.parse(data.data.Villas);
+    villas.forEach(villa => {
+      let item = new Villa(villa.VillaID, villa.Name, villa.Location, villa.Price, villa.VillaImagePath, []);
+      item.Requests = villa.Requests.map(request => {
+        return {
+          RequestID: request.RequestID,
+          Email: request.Email,
+          RequestMessage: request.RequestMessage
+        };
+      });
+      Data.addVilla(item);
+    });
+  }
+
   const container = document.getElementById("villaContainer");
+
+  //remove all children divs with class card
+  const cards = container.querySelectorAll(".card");
+  cards.forEach(card => {
+    card.remove();
+  });
+
   let tempCSS = document.createElement("style");
-  villas.forEach(villa => {
+  Data.Villas.forEach(villa => {
     container.innerHTML += `
         <div class="card">
           <img src="${villa.VillaImagePath || ''}" alt="${villa.Name}">
@@ -41,8 +131,7 @@ async function loadVillas() {
   document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', () => {
       document.getElementById('deleteModal').style.display = 'flex';
-      villaId = parseInt(button.parentElement.parentElement.querySelector('.btn-request').id.split('_')[1]);
-      document.getElementById('deleteConfirm').setAttribute('data-id', villaId);
+      document.getElementById('deleteConfirm').setAttribute('data-id', button.parentElement.parentElement.querySelector('.btn-edit').getAttribute('onclick').match(/\d+/)[0]);
     });
   });
 
@@ -56,11 +145,9 @@ async function openRequestModal(villaId) {
   const modal = document.getElementById("requestModal");
   const requestList = document.getElementById("requestList");
   requestList.innerHTML = "<p>Laden...</p>";
-
+  const requests = Data.getRequests(villaId);
   try {
-    const requests = JSON.parse(data.data.Villas).filter(villa => villa.VillaID === villaId)[0].Requests;
     requestList.innerHTML = "";
-    console.log(requests);
     if (requests.length === 0) {
       requestList.innerHTML = "<p>Geen verzoeken gevonden.</p>";
     } else {
@@ -99,6 +186,7 @@ function closeDeleteModal() {
 
 async function confirmDelete() {
   const villaId = parseInt(document.getElementById('deleteConfirm').getAttribute('data-id'));
+  Data.deleteVilla(villaId);
   await VillaRequests.deleteVilla(villaId);
   closeDeleteModal();
 }
@@ -107,14 +195,10 @@ function closeModal() {
   document.getElementById("requestModal").style.display = "none";
 }
 
-function closeRequest(id, villaId) {
-  console.log(id);
-  // remove request from local storage to prevent from having to reload the page
+async function closeRequest(id, villaId) {
   villaId = parseInt(villaId);
-
-
-  // closeModal();
-  // openRequestModal(id);
+  Data.deleteRequest(villaId, id);
+  await VillaRequests.deleteRequest(villaId, id);
 }
 
 loadVillas();

@@ -78,6 +78,9 @@ class VillaRequests extends Requests {
     static async deleteVilla(id) {
         return await this.request('POST', `${this.address}/delete`, id, true);
     }
+    static async deleteRequest(villaID, RequestID) {
+        return await this.request('POST', `${this.address}/delete-request`, { villaID, RequestID }, true);
+    }
 }
 
 

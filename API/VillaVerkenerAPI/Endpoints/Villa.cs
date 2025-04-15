@@ -17,7 +17,7 @@ public class VillaController : ControllerBase
     {
         _dbContext = dbContext;
     }
-    
+
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
         List<Villa> villaEntities = await _dbContext.Villas.Where(v => v.IsDeleted == 0).ToListAsync();
@@ -28,7 +28,7 @@ public class VillaController : ControllerBase
     [HttpGet("get-all-admin")]
     public async Task<ActionResult<RequestResponse>> GetAllAdminVillas([FromHeader(Name = "Authorization")] string authorizationHeader)
     {
-        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader,_dbContext);
+        bool isAllowed = await AdminController.IsValidAuth(authorizationHeader, _dbContext);
         if (!isAllowed)
         {
             return Unauthorized(RequestResponse.Failed("Unauthorized", new Dictionary<string, string> { { "Reason", "Invalid authorization header" } }));
@@ -196,8 +196,35 @@ public class VillaController : ControllerBase
         }
         villa.IsDeleted = 1;
         villa.DeletedAt = DateTime.Now;
-        _dbContext.Villas.Update(villa);    
+        _dbContext.Villas.Update(villa);
         await _dbContext.SaveChangesAsync();
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(villa) } }));
+    }
+
+    public struct RequestBody
+    {
+        public int VillaID { get; set; }
+        public int RequestID { get; set; }
+    }
+
+    [HttpPost("delete-request")]
+    public async Task<ActionResult<RequestResponse>> deleteRequest([FromBody] RequestBody body)
+    {
+        Request? request = await _dbContext.Requests
+            .Where(r => r.RequestId == body.RequestID)
+            .Where(r => r.VillaId == body.VillaID)
+            .Where(r => r.IsDeleted == 0)
+            .FirstOrDefaultAsync();
+        if (request == null)
+        {
+            return NotFound(RequestResponse.Failed("No request found", new Dictionary<string, string> { { "Reason", "No request found with the given id" } }));
+        }
+
+        request.IsDeleted = 1;
+        request.DeletedAt = DateTime.Now;
+        _dbContext.Requests.Update(request);
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(body.VillaID) }, { "Request", JsonSerializer.Serialize(body.RequestID) } }));
     }
 }
