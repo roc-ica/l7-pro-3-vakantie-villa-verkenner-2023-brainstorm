@@ -118,7 +118,7 @@ async function loadVillas(getData = true) {
 <button class="btn btn-edit" onclick="editVilla(${villa.VillaID})">Bewerken</button>
 <button class="btn btn-request" id="count_${villa.VillaID}" onclick="openRequestModal(${villa.VillaID})">Request</button>
           </div>
-          <button class="btn btn-delete">Verwijderen</button>
+          <button class="btn btn-delete" data-id="${villa.VillaID}">Verwijderen</button>
         </div>
       `;
     tempCSS.innerHTML += `
@@ -131,7 +131,7 @@ async function loadVillas(getData = true) {
   document.querySelectorAll('.btn-delete').forEach(button => {
     button.addEventListener('click', () => {
       document.getElementById('deleteModal').style.display = 'flex';
-      document.getElementById('deleteConfirm').setAttribute('data-id', button.parentElement.parentElement.querySelector('.btn-edit').getAttribute('onclick').match(/\d+/)[0]);
+      document.getElementById('deleteConfirm').setAttribute('data-id', button.getAttribute('data-id'));
     });
   });
 
