@@ -4,6 +4,7 @@ async function checkLogin() {
         window.location.href = 'AdminLogin.html';
     }
 }
+
 checkLogin();
 
 const imageInput = document.getElementById("imageInput");
@@ -18,6 +19,7 @@ imageInput.addEventListener("change", function () {
     if (selectedImages.length >= maxImages) {
         alert("You can only upload up to 20 images.");
         imageInput.value = "";
+
         return;
     }
 
@@ -25,11 +27,13 @@ imageInput.addEventListener("change", function () {
     files.forEach((file) => {
         if (!allowedTypes.includes(file.type)) {
             alert("Only .png, .jpeg, .avif and .webp files are allowed.");
+
             return;
         }
 
         if (file.size > maxFileSize) {
             alert("File size must be less than 2MB.");
+
             return;
         }
 
@@ -55,6 +59,7 @@ function previewImage(file) {
         removeBtn.onclick = function () {
             selectedImages = selectedImages.filter((img) => img !== file);
             imagePreviewContainer.removeChild(wrapper);
+
             if (mainImage === file) {
                 mainImage = selectedImages.length > 0 ? selectedImages[0] : null;
                 updateMainImage();
@@ -89,6 +94,7 @@ function updateMainImage() {
     document.querySelectorAll(".image-wrapper").forEach((wrapper, index) => {
         const img = selectedImages[index];
         const selectMainBtn = wrapper.querySelector(".main-btn");
+
         if (img === mainImage) {
             wrapper.classList.add("main-image");
             selectMainBtn.style.visibility = "hidden";
@@ -101,8 +107,10 @@ function updateMainImage() {
 
 document.getElementById('addVillaButton').addEventListener('click', async function (event) {
     event.preventDefault();
+
     if (selectedImages.length === 0) {
         alert("Please upload at least one image.");
+
         return;
     }
 
@@ -131,8 +139,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
     selectedImages.forEach((file) => {
         if (file === mainImage) {
             formData.append("MainImage", file);
-        }
-        else {
+        } else {
             formData.append("Images", file);
         }
     });
@@ -141,6 +148,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
         document.getElementById('addVillaButton').disabled = true;
         const response = await AdminRequest.request("POST", `${AdminRequest.address}/upload-villa`, formData, true);
         document.getElementById('addVillaButton').disabled = false;
+
         if (response.success) {
             alert("Villa added successfully!");
             window.location.href = "VillaList.html";
@@ -155,10 +163,13 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
 
 async function getTags() {
     let Tags = await VillaRequests.getTags();
+
     if (Tags.success === false) {
         console.log(Tags.error);
+
         return;
     }
+
     let PropertyTags = JSON.parse(Tags.data.PropertyTags);
     let locationTags = JSON.parse(Tags.data.LocationTags);
 
@@ -182,4 +193,5 @@ async function getTags() {
         </div>`;
     }
 }
+
 getTags();

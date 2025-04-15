@@ -4,8 +4,8 @@ const messageInput = document.getElementById("message");
 const errorMessage = document.getElementById("errorMessage");
 
 //Error handler
-let emailIsValid = true;
-let messageIsValid = true;
+let isEmailValid = true;
+let isMessageValid = true;
 
 function emailValidation() {
     let emailInputValue = emailInput.value;
@@ -13,10 +13,10 @@ function emailValidation() {
 
     if (!isValidEmail) {
         errorMessage.innerHTML = "Ongeldige email.";
-        emailIsValid = false;
+        isEmailValid = false;
     } else {
         errorMessage.innerHTML = "";
-        emailIsValid = true;
+        isEmailValid = true;
     }
 }
 
@@ -25,10 +25,10 @@ function messageValidation() {
 
     if (messageInputValue === "") {
         errorMessage.innerHTML = "Vul in alle velden.";
-        messageIsValid = false;
+        isMessageValid = false;
     } else {
         errorMessage.innerHTML = "";
-        messageIsValid = true;
+        isMessageValid = true;
     }
 }
 
@@ -39,7 +39,8 @@ function openMoreInfoRequestModal() {
 async function confirmRequest() {
     emailValidation();
     messageValidation();
-    if (emailIsValid && messageIsValid) {
+    
+    if (isEmailValid && isMessageValid) {
         await MoreInfoRequest.requestMoreInfo(id, emailInput.value, message.value);
         closeModal();
     }

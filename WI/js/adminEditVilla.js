@@ -10,6 +10,7 @@ function previewImage(file) {
     reader.readAsDataURL(file);
     reader.onload = function (event) {
         const imgSrc = event.target.result;
+
         addImagePreview({ src: imgSrc, file, isNew: true });
     };
 }
@@ -74,10 +75,10 @@ function addImagePreview({ src, file, url, isNew }) {
 
 function updateMainImage() {
     const wrappers = document.querySelectorAll(".image-wrapper");
+
     wrappers.forEach((wrapper, index) => {
         const imageObj = selectedImages[index];
         const selectMainBtn = wrapper.querySelector(".main-btn");
-
         let isCurrentMain =
             (mainImage.file && imageObj.file === mainImage.file) ||
             (mainImage.url && imageObj.url === mainImage.url);
@@ -96,6 +97,7 @@ imageInput.addEventListener("change", function () {
     if (selectedImages.length >= maxImages) {
         alert("You can only upload up to 20 images.");
         imageInput.value = "";
+
         return;
     }
 
@@ -103,11 +105,13 @@ imageInput.addEventListener("change", function () {
     files.forEach((file) => {
         if (!allowedTypes.includes(file.type)) {
             alert("Only .png, .jpeg, .avif and .webp files are allowed.");
+
             return;
         }
 
         if (file.size > maxFileSize) {
             alert("File size must be less than 2MB.");
+            
             return;
         }
 
@@ -124,6 +128,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
 
     if (selectedImages.length === 0) {
         alert("Please upload at least one image.");
+
         return;
     }
 
@@ -172,7 +177,7 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
         document.getElementById('addVillaButton').disabled = true;
         const response = await AdminRequest.editVilla(formData);
         console.log(response);
-        console.log(JSON.parse(response.data.data));
+        console.log(JSON.parse(response.data.data)); // zijn deze logs nog nodig?
         document.getElementById('addVillaButton').disabled = false;
 
         if (response.success) {
@@ -189,14 +194,14 @@ document.getElementById('addVillaButton').addEventListener('click', async functi
 
 async function getVilla(id) {
     let data = await VillaRequests.getVillaByIDEdit(id);
-    if (data.success == false) {
+    if (data.success == false) { // kan het niet (!data.success) ?
         console.error("Failed to get villa");
-        // window.location.href = "index.html";
+        // window.location.href = "index.html"; gaan we dit ooit weer terugzetten of kan het weg?
         return;
     }
 
     let villa = JSON.parse(data.data.Villa);
-    console.log(villa);
+    console.log(villa); // nodig?
 
     document.getElementById("name").value = villa.Name;
     document.getElementById("description").value = villa.Description;
@@ -206,7 +211,7 @@ async function getVilla(id) {
     document.getElementById("bedrooms").value = villa.Bedrooms;
     document.getElementById("bathrooms").value = villa.Bathrooms;
 
-    const PropertyTagsContainer = document.querySelectorAll('#propertyTagsContainer .tagCheckBox');
+    const propertyTagsContainer = document.querySelectorAll('#propertyTagsContainer .tagCheckBox');
     const locationTagsContainer = document.querySelectorAll('#locationTagsContainer .locationTagCheckBox');
     let propertyTags = [];
     let locationTags = [];
@@ -214,15 +219,17 @@ async function getVilla(id) {
     villa.PropertyTags.forEach(tag => {
         propertyTags.push(`${tag}`);
     });
+
     villa.LocationTags.forEach(tag => {
         locationTags.push(`${tag}`);
     });
 
-    PropertyTagsContainer.forEach(tag => {
+    propertyTagsContainer.forEach(tag => {
         if (propertyTags.includes(tag.value)) {
             tag.checked = true;
         }
     });
+
     locationTagsContainer.forEach(tag => {
         if (locationTags.includes(tag.value)) {
             tag.checked = true;
@@ -232,6 +239,7 @@ async function getVilla(id) {
     villa.VillaImagePaths.forEach((url) => {
         previewImageFromURL(url);
     });
+
     mainImage = { url: villa.VillaMainImagePath };
     previewImageFromURL(villa.VillaMainImagePath);
     updateMainImage();
@@ -241,8 +249,10 @@ async function getTags() {
     let Tags = await VillaRequests.getTags();
     if (Tags.success === false) {
         console.log(Tags.error);
+
         return;
     }
+
     let PropertyTags = JSON.parse(Tags.data.PropertyTags);
     let locationTags = JSON.parse(Tags.data.LocationTags);
 
@@ -266,6 +276,7 @@ async function getTags() {
         </div>`;
     }
 }
+
 getTags();
 
 url = new URL(window.location.href);
