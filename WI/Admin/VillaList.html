@@ -47,52 +47,54 @@
     </nav>
     <div class="content">
         <div class="button-container">
-        <button id="addVillaButton" class="addVillaButton" onclick="window.location.href='AdminAddVilla.html'">Voeg een
-            villa toe</button>
+            <button id="addVillaButton" class="addVillaButton" onclick="window.location.href='AdminAddVilla.html'">Voeg
+                een
+                villa toe</button>
         </div>
 
         <div class="container" id="villaContainer">
 
             <div id="requestModal" class="modal" style="display:none;">
                 <div class="modal-content">
-                  <span class="close" onclick="closeModal()">&times;</span>
-                  <h3>Verzoeken</h3>
-                  <div id="requestList">
-                  </div>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h3>Verzoeken</h3>
+                    <div id="requestList">
+                    </div>
                 </div>
-              </div>
-              
-              <div id="deleteModal" class="modal" style="display: none;">
-                <div class="modal-content">
-                  <span class="close" onclick="closeDeleteModal()">&times;</span>
-                  <h3>Weet je zeker dat je deze villa wilt verwijderen?</h3>
-                  <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="btn" onclick="closeDeleteModal()">Annuleren</button>
-                    <button class="btn btn-delete" onclick="confirmDelete()">Verwijderen</button>
-                  </div>
-                </div>
-              </div>
+            </div>
 
-    </div>
-    <footer>
-        <img src="../Assets/LogoBig.png" alt="Logo" class="logo">
-        <div class="links">
-            <a href="../index.html" class="active">
-                <h3>Home</h3>
-            </a>
-            <a href="../overons.html">
-                <h3>Over ons</h3>
-            </a>
-            <a href="../index.html">
-                <h3>Villa's</h3>
-            </a>
+            <div id="deleteModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeDeleteModal()">&times;</span>
+                    <h3>Weet je zeker dat je deze villa wilt verwijderen?</h3>
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button class="btn" onclick="closeDeleteModal()">Annuleren</button>
+                        <button class="btn btn-delete" onclick="confirmDelete()" id="deleteConfirm"
+                            data-id="">Verwijderen</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="contact">
-            <h3>Contact</h3>
-            <p>Telefoon: 06-12345678</p>
-            <p>Email: email@adress.com</p>
-        </div>
-    </footer>
+        <footer>
+            <img src="../Assets/LogoBig.png" alt="Logo" class="logo">
+            <div class="links">
+                <a href="../index.html" class="active">
+                    <h3>Home</h3>
+                </a>
+                <a href="../overons.html">
+                    <h3>Over ons</h3>
+                </a>
+                <a href="../index.html">
+                    <h3>Villa's</h3>
+                </a>
+            </div>
+            <div class="contact">
+                <h3>Contact</h3>
+                <p>Telefoon: 06-12345678</p>
+                <p>Email: email@adress.com</p>
+            </div>
+        </footer>
 </body>
 <script src="../js/script.js"></script>
 <script src="../js/api.js"></script>
