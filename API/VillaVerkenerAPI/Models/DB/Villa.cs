@@ -24,11 +24,11 @@ public partial class Villa
 
     public DateTime? DeletedAt { get; set; }
 
-    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
+    public virtual ICollection<Image> Images { get; set; } = [];
 
-    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+    public virtual ICollection<Request> Requests { get; set; } = [];
 
-    public virtual ICollection<VillaLocationTag> VillaLocationTags { get; set; } = new List<VillaLocationTag>();
+    public virtual ICollection<VillaLocationTag> VillaLocationTags { get; set; } = [];
 
-    public virtual ICollection<VillaPropertyTag> VillaPropertyTags { get; set; } = new List<VillaPropertyTag>();
+    public virtual ICollection<VillaPropertyTag> VillaPropertyTags { get; set; } = [];
 }

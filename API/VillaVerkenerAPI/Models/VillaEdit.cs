@@ -2,12 +2,14 @@
 
 namespace VillaVerkenerAPI.Models
 {
-    public class EditVilla : DetailedVilla
+    public class VillaEdit : DetailedVilla
     {
         public List<int> PropertyTags { get; set; } = new();
         public List<int> LocationTags { get; set; } = new();
+        public List<string> PropertyNames { get; set; }
+        public List<string> LocationNames { get; set; }
 
-        public EditVilla(Villa villa, DBContext _dbContext)
+        public VillaEdit(Villa villa, DBContext _dbContext)
             : base(villa)
         {
             PropertyTags = villa.VillaPropertyTags
@@ -21,11 +23,21 @@ namespace VillaVerkenerAPI.Models
                 .Where(lt => lt.HasValue) // Filter out null values
                 .Select(lt => lt.Value) // Convert nullable int to int
                 .ToList();
+
+            PropertyNames = _dbContext.PropertyTags
+                .Where(dpt => PropertyTags.Contains(dpt.PropertyTagId))
+                .Select(t => t.PropertyTag1)
+                .ToList();
+
+            LocationNames = _dbContext.LocationTags
+                .Where(dpt => LocationTags.Contains(dpt.LocationTagId))
+                .Select(t => t.LocationTag1)
+                .ToList();
         }
 
-        public static new EditVilla From(Villa villa, DBContext _dbContext)
+        public static new VillaEdit From(Villa villa, DBContext _dbContext)
         {
-            return new EditVilla(villa, _dbContext);
+            return new VillaEdit(villa, _dbContext);
         }
     }
 }

@@ -17,7 +17,8 @@ public class VillaController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    
+    [HttpGet("get-all")]
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
         List<Villa> villaEntities = await _dbContext.Villas.Where(v => v.IsDeleted == 0).ToListAsync();
@@ -111,16 +112,22 @@ public class VillaController : ControllerBase
         {
             return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Id is required" } }));
         }
+
         Villa? villa = await _dbContext.Villas
             .Where(v => v.VillaId == id)
             .Where(v => v.IsDeleted == 0)
             .FirstOrDefaultAsync();
+
         if (villa == null)
         {
             return NotFound(RequestResponse.Failed("No villa found", new Dictionary<string, string> { { "Reason", "No villa found with the given id" } }));
         }
+
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
-        DetailedVilla smallVilla = DetailedVilla.From(villa);
+        villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
+        villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
+        VillaEdit smallVilla = VillaEdit.From(villa, _dbContext);
+
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
     }
 
@@ -147,7 +154,7 @@ public class VillaController : ControllerBase
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
         villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
         villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
-        EditVilla smallVilla = EditVilla.From(villa, _dbContext);
+        VillaEdit smallVilla = VillaEdit.From(villa, _dbContext);
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
     }
 
