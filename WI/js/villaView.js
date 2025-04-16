@@ -1,14 +1,15 @@
 async function getVilla(id) {
     let data = await VillaRequests.getVillaByID(id);
-
+    console.log(data);
     if (data.success == false) {
         console.error("Failed to get villa");
-        window.location.href = "index.html";
+        // window.location.href = "index.html";
 
         return;
     }
 
     let villa = JSON.parse(data.data.Villa);
+    console.log(villa);
     document.getElementById("villaName").innerText = villa.Name;
     document.getElementById("villaDescription").innerText = villa.Description;
     document.getElementById("villaImage").src = villa.VillaMainImagePath;
@@ -17,6 +18,8 @@ async function getVilla(id) {
     document.querySelector("#villaCapacity p").innerText = `${villa.Capacity} personen`;
     document.querySelector("#villaBedrooms p").innerText = villa.Bedrooms;
     document.querySelector("#villaBathrooms p").innerText = villa.Bathrooms;
+    document.querySelector("#villaLocationTags p").innerText = villa.LocationNames.join(", ");
+    document.querySelector("#villaPropertyTags p").innerText = villa.PropertyNames.join(", ");
 
     villa.VillaImagePaths.forEach(villaImage => {
         let img = document.createElement("img");

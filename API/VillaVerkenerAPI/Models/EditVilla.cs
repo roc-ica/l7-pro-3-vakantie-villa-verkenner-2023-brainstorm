@@ -6,6 +6,8 @@ namespace VillaVerkenerAPI.Models
     {
         public List<int> PropertyTags { get; set; } = new();
         public List<int> LocationTags { get; set; } = new();
+        public List<string> PropertyNames { get; set; }
+        public List<string> LocationNames { get; set; }
 
         public EditVilla(Villa villa, DBContext _dbContext)
             : base(villa)
@@ -20,6 +22,16 @@ namespace VillaVerkenerAPI.Models
                 .Select(vlt => _dbContext.LocationTags.FirstOrDefault(lt => lt.LocationTagId == vlt.LocationTagId)?.LocationTagId)
                 .Where(lt => lt.HasValue) // Filter out null values
                 .Select(lt => lt.Value) // Convert nullable int to int
+                .ToList();
+
+            PropertyNames = _dbContext.PropertyTags
+                .Where(dpt => PropertyTags.Contains(dpt.PropertyTagId))
+                .Select(t => t.PropertyTag1)
+                .ToList();
+
+            LocationNames = _dbContext.LocationTags
+                .Where(dpt => LocationTags.Contains(dpt.LocationTagId))
+                .Select(t => t.LocationTag1)
                 .ToList();
         }
 

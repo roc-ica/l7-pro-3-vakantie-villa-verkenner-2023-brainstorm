@@ -15,7 +15,12 @@ namespace VillaVerkenerAPI.Models
         public string VillaMainImagePath { get; set; }
         public List<string> VillaImagePaths { get; set; }
 
-        public DetailedVilla(int villaID, string name, string description, decimal price, string location, int capacity, string villaImagePath, int bedrooms, int bathrooms, List<string> imagePaths)
+        public DetailedVilla(
+            int villaID, string name,
+            string description, decimal price,
+            string location, int capacity,
+            string villaImagePath, int bedrooms,
+            int bathrooms, List<string> imagePaths)
         {
             VillaID = villaID;
             Name = name;
@@ -28,6 +33,7 @@ namespace VillaVerkenerAPI.Models
             VillaImagePaths = imagePaths;
             Description = description;
         }
+
         public DetailedVilla(Villa villa)
         {
             VillaID = villa.VillaId;
