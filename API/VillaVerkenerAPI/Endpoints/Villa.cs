@@ -17,7 +17,8 @@ public class VillaController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    
+    [HttpGet("get-all")]
     public async Task<ActionResult<RequestResponse>> GetAllVillas()
     {
         List<Villa> villaEntities = await _dbContext.Villas.Where(v => v.IsDeleted == 0).ToListAsync();
