@@ -126,7 +126,7 @@ public class VillaController : ControllerBase
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
         villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
         villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
-        EditVilla smallVilla = EditVilla.From(villa, _dbContext);
+        VillaEdit smallVilla = VillaEdit.From(villa, _dbContext);
 
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
     }
@@ -154,7 +154,7 @@ public class VillaController : ControllerBase
         villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
         villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
         villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
-        EditVilla smallVilla = EditVilla.From(villa, _dbContext);
+        VillaEdit smallVilla = VillaEdit.From(villa, _dbContext);
         return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villa", JsonSerializer.Serialize(smallVilla) } }));
     }
 

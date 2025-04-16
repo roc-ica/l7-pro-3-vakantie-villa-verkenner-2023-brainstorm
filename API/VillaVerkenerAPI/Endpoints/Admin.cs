@@ -199,10 +199,11 @@ public class AdminController : ControllerBase
             await _dbContext.SaveChangesAsync();
 
             await transaction.CommitAsync();
-
+            newVillaEntity.Entity.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == newVillaEntity.Entity.VillaId).ToListAsync();
+            newVillaEntity.Entity.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == newVillaEntity.Entity.VillaId).ToListAsync();
             PDFGenerate pdfGenerate = new PDFGenerate();
             string pdfPath = Path.Combine(location, $"flyer_{newVillaEntity.Entity.Naam.Trim().Replace(" ", "_")}.pdf");
-            RequestResponse pdfResult = pdfGenerate.Main(newVillaEntity.Entity, pdfPath, shouldRegenerate: false);
+            RequestResponse pdfResult = pdfGenerate.Main(newVillaEntity.Entity, VillaEdit.From(newVillaEntity.Entity, _dbContext), pdfPath, shouldRegenerate: false);
 
             if (pdfResult.Success == false)
             {
@@ -381,10 +382,11 @@ public class AdminController : ControllerBase
 
             // Done
             await transaction.CommitAsync();
-
+            villa.VillaPropertyTags = await _dbContext.VillaPropertyTags.Where(vpt => vpt.VillaId == villa.VillaId).ToListAsync();
+            villa.VillaLocationTags = await _dbContext.VillaLocationTags.Where(vlt => vlt.VillaId == villa.VillaId).ToListAsync();
             PDFGenerate pdfGenerate = new PDFGenerate();
             string pdfPath = Path.Combine(Directory.GetCurrentDirectory(), "Images","PDF",$"flyer_{villa.Naam.Trim().Replace(" ", "_")}.pdf");
-            RequestResponse pdfResult = pdfGenerate.Main(villa, pdfPath, shouldRegenerate: true );
+            RequestResponse pdfResult = pdfGenerate.Main(villa, VillaEdit.From(villa, _dbContext), pdfPath, shouldRegenerate: true );
 
             return RequestResponse.Successfull("Success", new() { { "data", JsonSerializer.Serialize(uploadVillaRequest) } });
         }

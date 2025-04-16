@@ -1,6 +1,7 @@
 using System.Text;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using VillaVerkenerAPI.Models;
 using VillaVerkenerAPI.Models.DB;
 
 namespace VillaVerkenerAPI.Services
@@ -23,7 +24,7 @@ namespace VillaVerkenerAPI.Services
             _pages.Add(new PageItem(_document.AddPage()));
         }
 
-        public RequestResponse Main(Villa villa, string outputPath, bool shouldRegenerate = false)
+        public RequestResponse Main(Villa villa, VillaEdit editVilla, string outputPath, bool shouldRegenerate = false)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace VillaVerkenerAPI.Services
                     }
                 }
 
-                GeneratePDF(villa);
+                GeneratePDF(villa, editVilla);
 
                 _document.Save(outputPath);
                 _document.Close();
@@ -55,7 +56,7 @@ namespace VillaVerkenerAPI.Services
             }
         }
 
-        private void GeneratePDF(Villa villa)
+        private void GeneratePDF(Villa villa, VillaEdit editVilla)
         {
             PageItem page = _pages[0];
 
@@ -65,7 +66,7 @@ namespace VillaVerkenerAPI.Services
             ItemSize titleBlock = mainBlocks[1];
 
             ItemSize detailStartData = new ItemSize(titleBlock.Top, titleBlock.Left, imageBlock.Width, titleBlock.Height);
-            ItemSize details = AddVillaDetails(villa, detailStartData, page);
+            ItemSize details = AddVillaDetails(villa, editVilla, detailStartData, page);
             ItemSize description = AddDescription(villa, imageBlock, page);
         }
 
@@ -131,7 +132,7 @@ namespace VillaVerkenerAPI.Services
 
         private ItemSize drawImage(Villa villa, ItemSize combinedTop, PageItem page)
         {
-            ItemSize imageBlock = new ItemSize(combinedTop.Bottom, _layout.MarginLeft, _layout.ImageMaxWidth, _layout.ImageMaxHeight);
+            ItemSize imageBlock = new(combinedTop.Bottom, _layout.MarginLeft, _layout.ImageMaxWidth, _layout.ImageMaxHeight);
             Image? image = villa.Images.FirstOrDefault(i => i.IsPrimary == 1);
 
             string imagePath = Path.Combine("Images", image?.ImageLocation ?? string.Empty);
@@ -167,16 +168,29 @@ namespace VillaVerkenerAPI.Services
             return imageBlock;
         }
 
-        private ItemSize AddVillaDetails(Villa villa, ItemSize previousBlock, PageItem page)
+        private ItemSize AddVillaDetails(Villa villa, VillaEdit editVilla, ItemSize previousBlock, PageItem page)
         {
             XFont font = _layout.GetFont("Body");
-            string[] lines = new[]
-            {
+            List<string> lines = [
                 $"Prijs: {villa.Prijs} per nacht",
                 $"Capaciteit: {villa.Capaciteit}",
                 $"Slaapkamers: {villa.Slaapkamers}",
                 $"Badkamers: {villa.Badkamers}"
-            };
+            ];
+
+            if (editVilla.PropertyNames.Count != 0)
+            {
+                lines.Add(string.Empty);
+                lines.Add("Villa opties: ");
+                lines.AddRange(editVilla.PropertyNames);
+                lines.Add(string.Empty);
+            }
+
+            if (editVilla.LocationNames.Count != 0)
+            {
+                lines.Add("Locatie opties: ");
+                lines.AddRange(editVilla.LocationNames);
+            }
 
             ItemSize textBlock = ItemSize.GetStringBoxSize(lines, font);
             textBlock.MoveTo(previousBlock.Right + _layout.MarginRight, previousBlock.Top);
