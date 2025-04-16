@@ -1,14 +1,13 @@
 async function getVillas() {
-    const ids = [34, 35];
-
-    for (let i = 0; i < ids.length; i++) {
-        document.getElementsByClassName('villaContainer')[0].innerHTML += 
-        `<div class="villaCard">
+    let count = 2
+    for (let i = 0; i < count; i++) {
+        document.getElementsByClassName('villaContainer')[0].innerHTML += `
+            <div class="villaCard">
                 <p style="margin-left:5px;">Loading...</p>
             </div>`;
     }
 
-    const villas = await VillaRequests.getVillasByIDs(ids);
+    const villas = await VillaRequests.getFirstVillas(count);
 
     if (villas.success === false) {
         document.getElementsByClassName('villaContainer')[0].innerHTML = `

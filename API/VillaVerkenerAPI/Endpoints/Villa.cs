@@ -49,6 +49,31 @@ public class VillaController : ControllerBase
         return Ok(RequestResponse.Successfull(data: new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villas) } }));
     }
 
+    [HttpPost("get-first")]
+    public async Task<ActionResult<RequestResponse>> GetFirstVillas([FromBody] int count)
+    {
+        if (count <= 0)
+        {
+            return BadRequest(RequestResponse.Failed("Invalid input", new Dictionary<string, string> { { "Reason", "Count must be greater than 0" } }));
+        }
+
+        List<Villa> villaEntities = await _dbContext.Villas
+            .Where(v => v.IsDeleted == 0)
+            .Take(count)
+            .ToListAsync();
+
+        foreach (Villa villa in villaEntities)
+        {
+            villa.Images = await _dbContext.Images.Where(i => i.VillaId == villa.VillaId).ToListAsync();
+        }
+
+        List<SmallVilla> villaList = villaEntities
+            .Select(v => SmallVilla.From(v))
+            .ToList();
+
+        return Ok(RequestResponse.Successfull("Success", new Dictionary<string, string> { { "Villas", JsonSerializer.Serialize(villaList) } }));
+    }
+
     [HttpPost("get-by-ids")]
     public async Task<ActionResult<RequestResponse>> GetVillasByIds([FromBody] List<int> ids)
     {
