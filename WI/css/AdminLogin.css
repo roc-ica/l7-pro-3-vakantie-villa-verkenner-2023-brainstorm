@@ -1,0 +1,76 @@
+* {
+    box-sizing: border-box;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    background-color: var(--primary-color);
+    padding: 8rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+input[type="email"], 
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid;
+    font-size: 16px;
+    color: var(--text-color-dark);
+}
+
+button {
+    padding: 10px;
+    width: 48%;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: var(--secondary-color);
+    border: none;
+    font-weight: bold;
+}
+
+.login-btn {
+    background-color: var(--accent-primary);
+    border: none;
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+::placeholder{
+    font-weight: bold;
+    color: var(--text-color-dark);
+}
+
+.error-message {
+    background-color: var(--background-color-error);
+    color: var(--text-color-error);
+    padding: 10px;
+    border: 1px solid var(--text-color-error);;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+}
+
+.hidden {
+    display: none;
+}

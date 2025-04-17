@@ -1,0 +1,49 @@
+.content {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.content section {
+    margin-bottom: 60px;
+}
+
+.content h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--accent-primary);
+}
+
+.content p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.content ul {
+    padding-left: 20px;
+}
+
+.content ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.content strong {
+    font-weight: bold;
+}
+
+.content section:last-child {
+    margin-bottom: 0;
+}
+
+.content section div {
+    flex-wrap: wrap;
+}
+
+.content section div span {
+    font-size: 14px;
+    color: #555;
+}

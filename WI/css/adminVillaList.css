@@ -1,0 +1,190 @@
+* {
+  box-sizing: border-box;
+}
+
+.button-container {
+  text-align: right;
+  margin: 3rem;
+  margin-bottom: auto;
+}
+
+#addVillaButton {
+  background-color: var(--green);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5a7aa5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.card.highlight {
+  border: 3px dashed #a98cf5;
+}
+
+.card img {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.info {
+  flex-grow: 1;
+}
+
+.info h3 {
+  margin: 0;
+  font-size: 18px;
+  color: white;
+}
+
+.info p {
+  margin: 3px 0;
+  color: #e2e2e2;
+}
+
+.price {
+  font-size: 20px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  /* position: relative; wordt dit nog ooit gebruikt?? */
+  margin-right: 1rem;
+}
+
+.actions small {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.btn {
+  display: block;
+  margin: 5px 0;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  width: 120px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.btn-edit {
+  background-color: var(--accent-primary);
+  padding: 1rem;
+  color: var(--text-color-light);
+}
+
+.btn-request {
+  background-color: var(--accent-primary);
+  color: var(--text-color-light);
+  position: relative;
+  padding: 1rem;
+}
+
+.btn-request::after {
+  content: "3";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete {
+  background-color: red;
+  color: white;
+  text-align: center;
+  gap: 2rem;
+
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #5583a9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  color: white;
+  position: relative;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+#requestList {
+  margin-top: 20px;
+}
+
+.request-item {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+}
+.request-item:nth-child(even) {
+  margin-bottom: 16px;
+}
+.request-item:last-child {
+  margin-bottom: 0;
+}
