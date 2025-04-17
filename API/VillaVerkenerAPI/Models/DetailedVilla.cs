@@ -1,4 +1,5 @@
 ﻿using VillaVerkenerAPI.Models.DB;
+using VillaVerkenerAPI.Services;
 
 namespace VillaVerkenerAPI.Models
 {
@@ -45,8 +46,8 @@ namespace VillaVerkenerAPI.Models
             Bathrooms = villa.Badkamers;
             VillaMainImagePath = villa.Images.Count > 0 ? villa.Images.Where(image => image.IsPrimary == 1).First().ImageLocation : "";
             VillaImagePaths = villa.Images.Count > 0 ? villa.Images.Where(image => image.IsPrimary == 0).ToList().Select(image => image.ImageLocation).ToList() : new();
-            VillaMainImagePath = "http://localhost:3012/Images/" + VillaMainImagePath;
-            VillaImagePaths = VillaImagePaths.Select(imagePath => "http://localhost:3012/Images/" + imagePath).ToList();
+            VillaMainImagePath = APIUrlHandler.GetImageUrl(VillaMainImagePath);
+            VillaImagePaths = VillaImagePaths.Select(APIUrlHandler.GetImageUrl).ToList();
             Description = villa.Omschrijving;
         }
 
