@@ -1,6 +1,6 @@
 class Requests {
     static get address() {
-        return '87.106.224.51:3010/api';
+        return 'http://87.106.224.51:3010/api';
     }
 
     // internal function to send a request
@@ -136,7 +136,7 @@ class PDFRequests extends Requests {
 
 class ImageServer {
     static get address() {
-        return '87.106.224.51:3012/Images';
+        return 'http://87.106.224.51:3012/Images';
     }
 
     static get Logo() {
