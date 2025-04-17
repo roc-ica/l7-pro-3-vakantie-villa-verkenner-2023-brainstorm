@@ -140,7 +140,7 @@ class ImageServer {
     }
 
     static get Logo() {
-        return `${this.address}/General/Logo.png`;
+        return `${this.address}/General/logo.png`;
     }
 }
 
