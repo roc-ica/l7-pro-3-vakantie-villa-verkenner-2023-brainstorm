@@ -25,13 +25,10 @@ builder.WebHost.ConfigureKestrel(options =>
 
 var app = builder.Build();
 
-// Allow localhost
 app.UseCors(policy =>
-    policy.WithOrigins("http://localhost", "http://localhost:5500", "http://villaverkenner.local", "http://villa")
+    policy.AllowAnyOrigin()
           .AllowAnyMethod()
           .AllowAnyHeader());
-
-
 
 app.Use(async (context, next) =>
 {
